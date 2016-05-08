@@ -6,12 +6,16 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use \Facebook\Facebook;
+use \App\FacebookPage;
 
 class FacebookPageController extends Controller
 {
 
-    protected $fb = null;
+    public $fb = null;
 
+    /**
+     * Facebook Graph API ansprechen
+     */
     public function __construct() {
         $this->fb = new Facebook([
             'app_id' => env('FB_APPID'),
@@ -26,7 +30,19 @@ class FacebookPageController extends Controller
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function store(Request $request) {
-        dd('debug');
+
+        $this->validate($request, [
+            'page' => 'isFacebookPage'
+        ]);
+
+        $response = $this->fb->get($request->get('page'));
+        $pageNode = $response->getGraphPage()->all();
+
+        $fbp = new FacebookPage;
+        $fbp->name = $pageNode['name'];
+        $fbp->facebook_id = $pageNode['id'];
+        $fbp->save();
+
     }
 
 }

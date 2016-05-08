@@ -13,6 +13,9 @@ return [
     |
     */
 
+    // Custom
+    'is_facebook_page'     => 'Es konnte keine zugehörige Facebook Seite gefunden werden.',
+    // Out of the box
     'accepted'             => 'The :attribute must be accepted.',
     'active_url'           => 'The :attribute is not a valid URL.',
     'after'                => 'The :attribute must be a date after :date.',

@@ -14,8 +14,8 @@ class CreateFacebookpagesTable extends Migration
     {
         Schema::create('facebookpages', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
             $table->string('facebook_id');
+            $table->string('name');
             $table->timestamps();
         });
     }
