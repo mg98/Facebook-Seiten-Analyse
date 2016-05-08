@@ -19,3 +19,8 @@ Route::get('logout', 'Auth\AuthController@logout');
 // Startseite
 Route::get('/', array('before' => 'auth', 'uses' => 'HomeController@index'));
 Route::get('/', 'HomeController@index');
+
+Route::get('neu', function() {
+    return view('new');
+});
+Route::post('neu', 'FacebookPageController@store');

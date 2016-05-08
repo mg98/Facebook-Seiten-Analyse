@@ -49,7 +49,7 @@
                 <ul class="nav navbar-nav">
                     @if (Auth::check())
                         <li><a href="{{ url('/') }}">Dashboard</a></li>
-                        <li><a href="{{ url('/neu') }}"><i class="fa fa-plus" aria-hidden="true"></i> Neue Seite</a></li>
+                        <li><a href="{{ url('/neu') }}">+ Neue Seite</a></li>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                                 <span class="caret"></span> Facebook-Seiten
