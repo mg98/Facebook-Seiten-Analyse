@@ -15,6 +15,7 @@ return [
 
     // Custom
     'is_facebook_page'     => 'Es konnte keine zugehörige Facebook Seite gefunden werden.',
+    'page_not_registered'     => 'Diese Facebook Seite wurde bereits eingetragen.',
     // Out of the box
     'accepted'             => 'The :attribute must be accepted.',
     'active_url'           => 'The :attribute is not a valid URL.',

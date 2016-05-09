@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use \Facebook\Facebook;
 use \App\FacebookPage;
+use Illuminate\Support\Facades\Redirect;
 
 class FacebookPageController extends Controller
 {
@@ -30,9 +31,11 @@ class FacebookPageController extends Controller
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function store(Request $request) {
-
         $this->validate($request, [
             'page' => 'isFacebookPage'
+        ]);
+        $this->validate($request, [
+            'page' => 'pageNotRegistered'
         ]);
 
         $response = $this->fb->get($request->get('page'));
@@ -42,6 +45,20 @@ class FacebookPageController extends Controller
         $fbp->name = $pageNode['name'];
         $fbp->facebook_id = $pageNode['id'];
         $fbp->save();
+
+        $request->session()->flash('success', 'Die Facebook Seite "'.$pageNode['name'].'" wurde erfolgreich hinzugefügt!');
+        return view('fbpage.new');
+    }
+
+    public function show($fbpage) {
+        $name = niceDecode($fbpage);
+        $page = FacebookPage::where('name', $name);
+
+        if (!$page->exists()) {
+            return Redirect::to('404');
+        }
+
+
 
     }
 

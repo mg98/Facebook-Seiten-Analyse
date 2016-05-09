@@ -13,6 +13,10 @@
                             <div class="alert alert-danger">{{ $error }}</div>
                         @endforeach
 
+                        @if (Session::has('success'))
+                            <div class="alert alert-success">{{ session('success') }}</div>
+                        @endif
+
                         {!! Form::open(['method' => 'POST']) !!}
                             <p>http://facebook.com/
                                 {!! Form::text('page', null, ['placeholder' => 'Seiten-ID', 'required' => 'required']) !!}

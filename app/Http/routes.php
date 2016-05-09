@@ -11,6 +11,10 @@
 |
 */
 
+Route::get('404', function() {
+    return view('notfound');
+});
+
 // Authentication routes...
 Route::get('login', 'Auth\AuthController@showLoginForm');
 Route::post('login', 'Auth\AuthController@login');
@@ -21,6 +25,8 @@ Route::get('/', array('before' => 'auth', 'uses' => 'HomeController@index'));
 Route::get('/', 'HomeController@index');
 
 Route::get('neu', function() {
-    return view('new');
+    return view('fbpage.new');
 });
 Route::post('neu', 'FacebookPageController@store');
+
+Route::get('{fbpage}', 'FacebookPageController@show');

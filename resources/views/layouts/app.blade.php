@@ -56,7 +56,11 @@
                             </a>
 
                             <ul class="dropdown-menu" role="menu">
-                                <li><a href="{{ url('/logout') }}">asfas</a></li>
+                                @forelse (\App\FacebookPage::all() as $fbpage)
+                                    <li><a href="{{ url(niceEncode($fbpage->name)) }}">{{ $fbpage->name }}</a></li>
+                                @empty
+                                    <li><a><i>Keine verfügbar</i></a></li>
+                                @endforelse
                             </ul>
                         </li>
                     @endif
