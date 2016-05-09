@@ -32,7 +32,7 @@ class AppServiceProvider extends ServiceProvider
             }
         });
 
-        // Validator for already registered facebook pages
+        // Überprüft ob die Seite nicht schon vorher eingetragen wurde
         Validator::extend('pageNotRegistered', function($attribute, $value, $parameters, $validator) {
             $fbc = new FacebookPageController;
             try {

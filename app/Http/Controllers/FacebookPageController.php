@@ -27,6 +27,8 @@ class FacebookPageController extends Controller
     }
 
     /**
+     * Neue Facebook Seite erstellen
+     *
      * @param Request $request
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
@@ -47,19 +49,53 @@ class FacebookPageController extends Controller
         $fbp->save();
 
         $request->session()->flash('success', 'Die Facebook Seite "'.$pageNode['name'].'" wurde erfolgreich hinzugefügt!');
-        return view('fbpage.new');
+        return view('fbpage/new');
     }
 
+    /**
+     * Ansichtsseite
+     *
+     * @param string $fbpage
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function show($fbpage) {
-        $name = niceDecode($fbpage);
-        $page = FacebookPage::where('name', $name);
+        $fbpage = $this->getFacebookPage($fbpage);
+        return $fbpage ? view('fbpage/show', compact('fbpage')) : Redirect::to('404');
+    }
 
-        if (!$page->exists()) {
+    /**
+     * Läd Posts einer Facebook-Seite nach
+     *
+     * @param string $fbpage
+     * @return mixed
+     */
+    public function getPosts($fbpage) {
+        $fbpage = $this->getFacebookPage($fbpage);
+
+        if ($fbpage == false) {
             return Redirect::to('404');
         }
 
+        $posts = $this->fb->get($fbpage->facebook_id . '/posts')->getGraphEdge();
 
 
+
+    }
+
+    /**
+     * Findet anhand des Seitennamens die Seite oder leitet auf 404-Seite um
+     *
+     * @param string $fbpage
+     * @return FacebookPage|bool
+     */
+    private function getFacebookPage($fbpage) {
+        $fbpage = FacebookPage::where('name', niceDecode($fbpage));
+
+        if (!$fbpage->exists()) {
+            return false;
+        } else {
+            return $fbpage->first();
+        }
     }
 
 }

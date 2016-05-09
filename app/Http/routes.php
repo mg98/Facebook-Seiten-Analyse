@@ -25,8 +25,9 @@ Route::get('/', array('before' => 'auth', 'uses' => 'HomeController@index'));
 Route::get('/', 'HomeController@index');
 
 Route::get('neu', function() {
-    return view('fbpage.new');
+    return view('fbpage/new');
 });
 Route::post('neu', 'FacebookPageController@store');
 
 Route::get('{fbpage}', 'FacebookPageController@show');
+Route::get('{fbpage}/getposts', 'FacebookPageController@getPosts');
