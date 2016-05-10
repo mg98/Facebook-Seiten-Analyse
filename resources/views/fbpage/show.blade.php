@@ -7,7 +7,7 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">{{ $fbpage->name }}</div>
                     <div class="panel-body">
-                        <a href="{{ niceEncode($fbpage->name) }}/getposts">Posts nachladen</a>
+                        <a href="getposts">Posts nachladen</a>
                         <table class="table table-hover">
                             <tr>
                                 <th>Post</th>
@@ -16,6 +16,14 @@
                                 <th>Kommentare</th>
                                 <th>Aktion</th>
                             </tr>
+                            @foreach (\App\FacebookPost::where('page_id', $fbpage->id)->limit(10)->get() as $post)
+                                <tr>
+                                    <td>{{ $post->text }}</td>
+                                    <td>{{ $post->published_at }}</td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                </tr>
+                            @endforeach
                         </table>
                         <nav>
                             <ul class="pager">

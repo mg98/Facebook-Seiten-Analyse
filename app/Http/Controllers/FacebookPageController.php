@@ -77,20 +77,21 @@ class FacebookPageController extends Controller
             return Redirect::to('404');
         }
 
-        $posts = $this->fb->get($fbpage->facebook_id . '/posts')->getGraphEdge();
         if (!FacebookPost::where('page_id', $fbpage->id)->exists()) {
+            $posts = $this->fb->get($fbpage->facebook_id . '/posts?limit=100')->getGraphEdge();
             foreach ($posts->all() as $post) {
                 $post = $post->all();
                 $newPost = new FacebookPost;
                 $newPost->page_id = $fbpage->id;
                 $newPost->facebook_id = $post['id'];
-                $newPost->text = substr($post['message'], 0, 50);
+                $text = array_key_exists('message', $post) ? $post['message'] : $post['story'];
+                $newPost->text = substr($text, 0, 50);
                 $newPost->published_at = $post['created_time'];
                 $newPost->save();
             }
         }
 
-
+        return Redirect::back();
     }
 
     /**
