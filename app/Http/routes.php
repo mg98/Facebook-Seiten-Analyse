@@ -24,10 +24,22 @@ Route::get('logout', 'Auth\AuthController@logout');
 Route::get('/', array('before' => 'auth', 'uses' => 'HomeController@index'));
 Route::get('/', 'HomeController@index');
 
-Route::get('neu', function() {
-    return view('fbpage/new');
-});
-Route::post('neu', 'FacebookPageController@store');
+Route::get('neu', [
+    'middleware' => 'auth',
+    'uses' => function() {
+        return view('fbpage/new');
+    }
+]);
+Route::post('neu', [
+    'middleware' => 'auth',
+    'uses' => 'FacebookPageController@store'
+]);
 
-Route::get('{fbpage}', 'FacebookPageController@show');
-Route::get('{fbpage}/getposts', 'FacebookPageController@getPosts');
+Route::get('{fbpage}', [
+    'middleware' => 'auth',
+    'uses' => 'FacebookPageController@show'
+]);
+Route::get('{fbpage}/getposts', [
+    'middleware' => 'auth',
+    'uses' => 'FacebookPageController@getPosts'
+]);
