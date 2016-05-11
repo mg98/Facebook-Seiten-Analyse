@@ -7,7 +7,7 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">{{ $fbpage->name }}</div>
                     <div class="panel-body">
-                        <a href="getposts">Posts nachladen</a>
+                        <a href="{{ niceEncode($fbpage->name) }}/getposts">Posts nachladen</a>
                         <table class="table table-hover">
                             <tr>
                                 <th>Post</th>
@@ -16,21 +16,26 @@
                                 <th>Kommentare</th>
                                 <th>Aktion</th>
                             </tr>
-                            @foreach (\App\FacebookPost::where('page_id', $fbpage->id)->limit(10)->get() as $post)
+                            @foreach ($posts as $post)
                                 <tr>
                                     <td>{{ $post->text }}</td>
                                     <td>{{ $post->published_at }}</td>
                                     <td>0</td>
                                     <td>0</td>
+                                    <td>
+                                        <a href="http://facebook.com/{{ $post->facebook_id }}" target="_blank">
+                                            <i class="fa fa-facebook-square" aria-hidden="true"></i>
+                                        </a>
+                                        <a href="{{ $post->id }}/delete">
+                                            <i class="fa fa-trash" aria-hidden="true"></i>
+                                        </a>
+                                    </td>
                                 </tr>
                             @endforeach
                         </table>
-                        <nav>
-                            <ul class="pager">
-                                <li class="previous disabled"><a href="#"><span aria-hidden="true">&larr;</span> Älter</a></li>
-                                <li class="next"><a href="#">Neuer <span aria-hidden="true">&rarr;</span></a></li>
-                            </ul>
-                        </nav>
+                        <div class="center">
+                            {!! $posts->render() !!}
+                        </div>
                     </div>
                 </div>
             </div>
