@@ -56,15 +56,11 @@ class FacebookPageController extends Controller
     /**
      * Ansichtsseite
      *
-     * @param string $fbpage
+     * @param Request $request
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function show($fbpage) {
-        $fbpage = $this->getFacebookPage($fbpage);
-
-        if (!$fbpage) {
-            return Redirect::to('404');
-        }
+    public function show(Request $request) {
+        $fbpage = $request->get('fbpage');
 
         $posts = FacebookPost::where('page_id', $fbpage->id)->orderBy('published_at', 'desc')->paginate(20);
 
@@ -74,16 +70,11 @@ class FacebookPageController extends Controller
     /**
      * Lädt Posts einer Facebook-Seite nach
      *
-     * @param string $fbpage
+     * @param Request $request
      * @return mixed
      */
-    public function getPosts($fbpage) {
-        $fbpage = $this->getFacebookPage($fbpage);
-
-        if ($fbpage == false) {
-            return Redirect::to('404');
-        }
-
+    public function getPosts(Request $request) {
+        $fbpage = $request->get('fbpage');
         // Posts anfordern
         if (!FacebookPost::where('page_id', $fbpage->id)->exists()) {
             // Wenn es zu dieser Facebook Seite noch keine gibt, hol alle
@@ -115,19 +106,17 @@ class FacebookPageController extends Controller
     }
 
     /**
-     * Findet anhand des Seitennamens die Seite oder leitet auf 404-Seite um
+     * Ergebnisseite eines Projekts
      *
-     * @param string $fbpage
-     * @return FacebookPage|bool
+     * @param $fbpage
      */
-    private function getFacebookPage($fbpage) {
-        $fbpage = FacebookPage::where('name', niceDecode($fbpage));
+    public function showResults($fbpage) {
 
-        if (!$fbpage->exists()) {
-            return false;
-        } else {
-            return $fbpage->first();
-        }
+    }
+
+    public function startAnalysis($fbpage) {
+
+
     }
 
 }

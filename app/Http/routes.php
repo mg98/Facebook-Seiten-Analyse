@@ -11,10 +11,6 @@
 |
 */
 
-Route::get('404', function() {
-    return view('notfound');
-});
-
 // Authentication routes...
 Route::get('login', 'Auth\AuthController@showLoginForm');
 Route::post('login', 'Auth\AuthController@login');
@@ -33,8 +29,14 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('neu', 'FacebookPageController@store');
 
     // Facebook Seiten Ansicht
-    Route::group(['prefix' => '{fbpage}'], function () {
+    Route::group(['prefix' => '{fbpage}', 'middleware' => 'fbpage'], function () {
+        // Posts Übersicht
         Route::get('/', 'FacebookPageController@show');
-        Route::get('getposts', 'FacebookPageController@getPosts');
+        // Analyse
+        Route::get('analyse', 'FacebookPageController@showResults');
+        // Posts nachladen
+        Route::get('nachladen', 'FacebookPageController@getPosts');
+        // Analyse starten
+        Route::get('analyseStarten', 'FacebookPageController@startAnalysis');
     });
 });

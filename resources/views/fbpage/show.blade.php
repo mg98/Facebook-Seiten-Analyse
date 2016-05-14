@@ -14,9 +14,14 @@
                         </ul>
 
                         <div id="action-bar">
-                            <a href="{{ niceEncode($fbpage->name) }}/getposts">
+                            <a href="{{ niceEncode($fbpage->name) }}/nachladen">
                                 <button type="button" class="btn btn-default">
                                     <i class="fa fa-refresh" aria-hidden="true"></i> Posts nachladen
+                                </button>
+                            </a>
+                            <a href="{{ niceEncode($fbpage->name) }}/analyseStarten">
+                                <button type="button" class="btn btn-default">
+                                    <i class="fa fa-play" aria-hidden="true"></i> Nutzeranalyse starten
                                 </button>
                             </a>
                         </div>

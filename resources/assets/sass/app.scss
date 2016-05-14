@@ -1,5 +1,13 @@
 // @import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap";
 
+body {
+  font-family: 'Lato';
+}
+
+.fa-btn {
+  margin-right: 6px;
+}
+
 div.center {
   width: 100%;
   text-align: center;
