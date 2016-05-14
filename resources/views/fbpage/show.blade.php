@@ -10,16 +10,16 @@
 
                         <ul class="nav nav-tabs nav-justified">
                             <li role="presentation" class="active"><a href="#">Posts</a></li>
-                            <li role="presentation"><a href="analyse">Analyse</a></li>
+                            <li role="presentation"><a href="/{{ niceEncode($fbpage->name) }}/analyse">Analyse</a></li>
                         </ul>
 
                         <div id="action-bar">
-                            <a href="{{ niceEncode($fbpage->name) }}/nachladen">
+                            <a href="/{{ niceEncode($fbpage->name) }}/nachladen">
                                 <button type="button" class="btn btn-default">
                                     <i class="fa fa-refresh" aria-hidden="true"></i> Posts nachladen
                                 </button>
                             </a>
-                            <a href="{{ niceEncode($fbpage->name) }}/analyseStarten">
+                            <a href="/{{ niceEncode($fbpage->name) }}/analyseStarten">
                                 <button type="button" class="btn btn-default">
                                     <i class="fa fa-play" aria-hidden="true"></i> Nutzeranalyse starten
                                 </button>

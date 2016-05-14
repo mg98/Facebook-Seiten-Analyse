@@ -62,7 +62,7 @@ class FacebookPageController extends Controller
     public function show(Request $request) {
         $fbpage = $request->get('fbpage');
 
-        $posts = FacebookPost::where('page_id', $fbpage->id)->orderBy('published_at', 'desc')->paginate(20);
+        $posts = $fbpage->getPosts()->paginate(20);
 
         return view('fbpage/show', compact('fbpage', 'posts'));
     }
@@ -114,9 +114,12 @@ class FacebookPageController extends Controller
 
     }
 
-    public function startAnalysis($fbpage) {
+    public function startAnalysis(Request $request) {
+        $fbpage = $request->get('fbpage');
 
-
+        foreach ($fbpage->getPosts()->get() as $post) {
+            dd($post);
+        }
     }
 
 }
