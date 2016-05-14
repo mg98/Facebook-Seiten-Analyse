@@ -72,7 +72,7 @@ class FacebookPageController extends Controller
     }
 
     /**
-     * Läd Posts einer Facebook-Seite nach
+     * Lädt Posts einer Facebook-Seite nach
      *
      * @param string $fbpage
      * @return mixed

@@ -7,7 +7,21 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">{{ $fbpage->name }}</div>
                     <div class="panel-body">
-                        <a href="{{ niceEncode($fbpage->name) }}/getposts">Posts nachladen</a>
+
+                        <ul class="nav nav-tabs nav-justified">
+                            <li role="presentation" class="active"><a href="#">Posts</a></li>
+                            <li role="presentation"><a href="analyse">Analyse</a></li>
+                        </ul>
+
+                        <div id="action-bar">
+                            <a href="{{ niceEncode($fbpage->name) }}/getposts">
+                                <button type="button" class="btn btn-default">
+                                    <i class="fa fa-refresh" aria-hidden="true"></i> Posts nachladen
+                                </button>
+                            </a>
+                        </div>
+
+
                         <table class="table table-hover">
                             <tr>
                                 <th>Post</th>
@@ -23,11 +37,8 @@
                                     <td>0</td>
                                     <td>0</td>
                                     <td>
-                                        <a href="http://facebook.com/{{ $post->facebook_id }}" target="_blank">
+                                        <a href="http://facebook.com/{{ $post->facebook_id }}" target="_blank" title="Auf Facebook öffnen">
                                             <i class="fa fa-facebook-square" aria-hidden="true"></i>
-                                        </a>
-                                        <a href="{{ $post->id }}/delete">
-                                            <i class="fa fa-trash" aria-hidden="true"></i>
                                         </a>
                                     </td>
                                 </tr>
