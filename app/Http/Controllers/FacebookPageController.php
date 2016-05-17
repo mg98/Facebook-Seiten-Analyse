@@ -8,6 +8,7 @@ use App\Http\Requests;
 use \Facebook\Facebook;
 use \App\FacebookPage;
 use \App\FacebookPost;
+use \App\FacebookUser;
 use Illuminate\Support\Facades\Redirect;
 
 class FacebookPageController extends Controller
@@ -115,11 +116,44 @@ class FacebookPageController extends Controller
     }
 
     public function startAnalysis(Request $request) {
+        ini_set('max_execution_time', 3600);
         $fbpage = $request->get('fbpage');
+        $fbpage->analyzing = true;
+        $fbpage->save();
 
-        foreach ($fbpage->getPosts()->get() as $post) {
-            dd($post);
+        try {
+            foreach ($fbpage->getPosts()->orderBy('id', 'desc')->get() as $post) {
+                // Likes und Kommentare ziehen
+                $likes = $this->fb->get($post->facebook_id . '/likes?limit=500')->getGraphEdge()->all();
+                $comments = $this->fb->get($post->facebook_id . '/comments?limit=500')->getGraphEdge()->all();
+                // Durch alle Likes UND Kommentare iterieren
+                foreach (array_merge($likes, $comments) as $data) {
+                    // Überprüfen ob es sich gerade um ein Kommentar handelt
+                    $data = $data->all();
+                    if (array_key_exists('from', $data)) {
+                        $data = $data['from']->all();
+                    }
+                    // Überspringe, wenn Nutzer schon bekannt ist
+                    if (FacebookUser::where('facebook_id', $data['id'])->exists()) {
+                        continue;
+                    }
+                    // Erstelle neuen Nutzer Eintrag
+                    $newUser = new FacebookUser;
+                    $newUser->post_id = $post['id'];
+                    $newUser->facebook_id = $data['id'];
+                    $newUser->name = $data['name'];
+                    $newUser->save();
+                }
+            }
+        } catch (\Facebook\Exceptions\FacebookResponseException $e) {
+            $fbpage->analyzing = false;
+            $fbpage->save();
+            exit($e->getMessage());
         }
+
+        $fbpage->analyzing = false;
+        $fbpage->save();
+        exit('success');
     }
 
 }

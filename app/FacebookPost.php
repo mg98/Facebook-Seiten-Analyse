@@ -17,4 +17,8 @@ class FacebookPost extends Model
         'published_at'
     ];
 
+    public function getCollectedUsers() {
+        return FacebookUser::where('post_id', $this->id);
+    }
+
 }

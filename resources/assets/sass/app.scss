@@ -16,3 +16,25 @@ div.center {
 #action-bar {
   margin: 10px 0 10px 0;
 }
+
+table.posts tr {
+  th:nth-child(2), td:nth-child(2) {
+    width: 175px;
+  }
+  th:nth-child(3), td:nth-child(3) {
+    width: 125px;
+    text-align: center;
+  }
+  th:nth-child(4), td:nth-child(4) {
+    width: 75px;
+    text-align: right;
+  }
+}
+
+#alerts {
+  margin-top: 10px;
+}
+
+#alerts .alert-info {
+  display: none;
+}

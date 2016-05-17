@@ -37,6 +37,16 @@ Route::group(['middleware' => 'auth'], function () {
         // Posts nachladen
         Route::get('nachladen', 'FacebookPageController@getPosts');
         // Analyse starten
-        Route::get('analyseStarten', 'FacebookPageController@startAnalysis');
+        Route::group(['prefix' => 'analyse/start'], function () {
+            Route::get('/', 'FacebookPageController@startAnalysis');
+            Route::get('success', function() {
+                Session::flash('success', true);
+                return Redirect::back();
+            });
+            Route::get('failure', function() {
+                Session::flash('failure', $_GET['exception']);
+                return Redirect::back();
+            });
+        });
     });
 });
