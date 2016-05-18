@@ -32,21 +32,21 @@
 
                         {{-- Steuerelemente --}}
                         <div id="action-bar">
-                            <a id="start-getposts" href="{{ url(niceEncode($fbpage->name) . '/nachladen') }}">
+                            <a href="{{ url(niceEncode($fbpage->name) . '/nachladen') }}">
                                 <button type="button" class="btn btn-default">
-                                    {{-- fa fa-refresh fa-spin fa-1x fa-fw margin-bottom --}}
                                     <i class="fa fa-refresh" aria-hidden="true"></i> Posts nachladen
                                 </button>
                             </a>
                             <a id="start-analysis" href="{{ url(niceEncode($fbpage->name) . '/analyse/start') }}">
-                                <button type="button" class="btn btn-default">
-                                    @if ($fbpage->analyzing)
-                                        <i class="fa fa-circle-o-notch fa-spin fa-1x fa-fw margin-bottom"></i>
-                                    @else
-                                        <i class="fa fa-play" aria-hidden="true"></i>
-                                    @endif
-                                    Nutzeranalyse starten
-                                </button>
+                                @if ($fbpage->analyzing)
+                                    <button type="button" class="btn btn-default disabled">
+                                        <i class="fa fa-circle-o-notch fa-spin fa-1x fa-fw margin-bottom"></i> Nutzeranalyse starten
+                                    </button>
+                                @else
+                                    <button type="button" class="btn btn-default">
+                                        <i class="fa fa-play" aria-hidden="true"></i> Nutzeranalyse starten
+                                    </button>
+                                @endif
                             </a>
                         </div>
 

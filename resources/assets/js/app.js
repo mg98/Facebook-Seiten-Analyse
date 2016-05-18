@@ -29,8 +29,4 @@ $(function() {
 
         return false;
     });
-
-    $("#start-getposts").click(function() {
-
-    })
 });

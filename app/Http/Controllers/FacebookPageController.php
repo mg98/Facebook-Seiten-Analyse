@@ -107,14 +107,24 @@ class FacebookPageController extends Controller
     }
 
     /**
-     * Ergebnisseite eines Projekts
+     * Ergebnisseite einer Seite/ Auswertung der Analyse
      *
      * @param $fbpage
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function showResults($fbpage) {
+    public function showResults(Request $request) {
+        $fbpage = $request->get('fbpage');
 
+        // ... code
+
+        return view('fbpage/results');
     }
 
+    /**
+     * Startet Nutzeranalyse (Aufruf über AJAX)
+     *
+     * @param Request $request
+     */
     public function startAnalysis(Request $request) {
         ini_set('max_execution_time', 3600);
         $fbpage = $request->get('fbpage');
@@ -123,19 +133,18 @@ class FacebookPageController extends Controller
 
         try {
             foreach ($fbpage->getPosts()->orderBy('id', 'desc')->get() as $post) {
+                // Datum des zuletzt hinzugefügten Usereintrags ziehen
+                $lastEntry = FacebookUser::where('post_id', $post->id)->orderBy('id', 'desc')->first();
+                $lastAnalysis = strtotime($lastEntry['created_at']) + 1;
                 // Likes und Kommentare ziehen
-                $likes = $this->fb->get($post->facebook_id . '/likes?limit=500')->getGraphEdge()->all();
-                $comments = $this->fb->get($post->facebook_id . '/comments?limit=500')->getGraphEdge()->all();
+                $likes = $this->fb->get($post->facebook_id . '/likes?limit=500&since=' . $lastAnalysis)->getGraphEdge()->all();
+                $comments = $this->fb->get($post->facebook_id . '/comments?limit=500&since=' . $lastAnalysis)->getGraphEdge()->all();
                 // Durch alle Likes UND Kommentare iterieren
                 foreach (array_merge($likes, $comments) as $data) {
                     // Überprüfen ob es sich gerade um ein Kommentar handelt
                     $data = $data->all();
                     if (array_key_exists('from', $data)) {
                         $data = $data['from']->all();
-                    }
-                    // Überspringe, wenn Nutzer schon bekannt ist
-                    if (FacebookUser::where('facebook_id', $data['id'])->exists()) {
-                        continue;
                     }
                     // Erstelle neuen Nutzer Eintrag
                     $newUser = new FacebookUser;
