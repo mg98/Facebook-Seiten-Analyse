@@ -9,25 +9,27 @@
                     <div class="panel-body">
                         {{-- Menü Tabs --}}
                         <ul class="nav nav-tabs nav-justified">
-                            <li role="presentation" class="active"><a href="#">Posts</a></li>
-                            <li role="presentation"><a href="{{ url(niceEncode($fbpage->name) . '/analyse') }}">Analyse</a></li>
+                            <li role="presentation"><a href="{{ url(niceEncode($fbpage->name)) }}">Posts</a></li>
+                            <li role="presentation" class="active"><a href="#">Analyse</a></li>
                         </ul>
 
                         {{-- Posts Tabelle --}}
-                        <table class="table table-hover posts">
+                        <table class="table table-hover users">
                             <tr>
-                                <th>Post</th>
-                                <th>Veröffentlicht</th>
-                                <th>Nutzerdaten</th>
+                                <th>Name</th>
+                                <th>Aktivitäten</th>
+                                <th>Getrackt sein</th>
+                                <th>Zuletzt getrackt</th>
                                 <th>Aktion</th>
                             </tr>
-                            @foreach ($posts as $post)
+                            @foreach ($users as $user)
                                 <tr>
-                                    <td>{{ $post->text }}</td>
-                                    <td>{{ $post->published_at }}</td>
-                                    <td>{{ count($post->getUsers()->get()) }}</td>
+                                    <td>{{ $user->name }}</td>
+                                    <td>{{ $user->count }}</td>
+                                    <td>{{ $user->created_at }}</td>
+                                    <td>{{ $user->updated_at }}</td>
                                     <td>
-                                        <a href="http://facebook.com/{{ $post->facebook_id }}" target="_blank" title="Auf Facebook öffnen">
+                                        <a href="http://facebook.com/{{ $user->facebook_id }}" target="_blank" title="Auf Facebook öffnen">
                                             <i class="fa fa-facebook-square" aria-hidden="true"></i>
                                         </a>
                                     </td>
@@ -37,7 +39,7 @@
 
                         {{-- Pagination --}}
                         <div class="center">
-                            {!! $posts->render() !!}
+                            {{ $pagination }}
                         </div>
                     </div>
                 </div>

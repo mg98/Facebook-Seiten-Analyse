@@ -26,9 +26,7 @@ class FacebookPageController extends Controller
             'default_graph_version' => 'v2.5',
             'default_access_token' => env('FB_ACCESSTOKEN')
         ]);
-        $llat = $this->fb->get(
-'/oauth/access_token?grant_type=fb_exchange_token&client_id=234245193613435&client_secret=6c0d53c496285ced42cf6b72ae893956&fb_exchange_token=EAADVC3WOQHsBABL8TwjSF8zZBMCHwupc4COEZB4ncYyKfpttxyIMaXJjYZBVz303wxcttdmaZA4G3bA23AqkwMReBhyMMMmzvAXXO46oZB9B1sbuRjlZBnb1hEe7UsFaQDFlYEnKIZBJQufIETlFln64cGNGUW8Idk5KjkLOyQuiPVxGtWXxwkp'
-        );
+        //$llat = $this->fb->get('/oauth/access_token?grant_type=fb_exchange_token&client_id=234245193613435&client_secret=6c0d53c496285ced42cf6b72ae893956&fb_exchange_token=EAADVC3WOQHsBABL8TwjSF8zZBMCHwupc4COEZB4ncYyKfpttxyIMaXJjYZBVz303wxcttdmaZA4G3bA23AqkwMReBhyMMMmzvAXXO46oZB9B1sbuRjlZBnb1hEe7UsFaQDFlYEnKIZBJQufIETlFln64cGNGUW8Idk5KjkLOyQuiPVxGtWXxwkp');
         //dd($llat);
     }
 
@@ -118,10 +116,12 @@ class FacebookPageController extends Controller
      */
     public function showResults(Request $request) {
         $fbpage = $request->get('fbpage');
+        $page = isset($_GET['page']) && intval($_GET['page']) ? $_GET['page'] : 1;
+        $users = $fbpage->users()->sortByDesc('count')->forPage($page, 15);
+        $paginator = new \Illuminate\Pagination\Paginator($fbpage->users()->sortByDesc('count'), 15, $page);
+        $pagination = $paginator->links();
 
-        // ... code
-
-        return view('fbpage/results');
+        return view('fbpage/results', compact('fbpage', 'users', 'pagination'));
     }
 
     /**
@@ -135,14 +135,14 @@ class FacebookPageController extends Controller
         $fbpage->analyzing = true;
         $fbpage->save();
 
-        try {
-            foreach ($fbpage->getPosts()->orderBy('id', 'desc')->get() as $post) {
+        foreach ($fbpage->posts()->get() as $post) {
+            try {
                 // Datum des zuletzt hinzugefügten Usereintrags ziehen
-                $lastEntry = $post->getUsers()->orderBy('id', 'desc')->first();
+                $lastEntry = $post->users()->first();
                 $lastAnalysis = strtotime($lastEntry['created_at']) + 1;
                 // Likes und Kommentare ziehen
-                $likes = $this->fb->get($post->facebook_id . '/likes?limit=500&since=' . $lastAnalysis)->getGraphEdge()->all();
-                $comments = $this->fb->get($post->facebook_id . '/comments?limit=500&since=' . $lastAnalysis)->getGraphEdge()->all();
+                $likes = $this->fb->get($post->facebook_id . '/likes?limit=' . env('FB_LIMIT') . '&since=' . $lastAnalysis)->getGraphEdge()->all();
+                $comments = $this->fb->get($post->facebook_id . '/comments?limit=' . env('FB_LIMIT') . '&since=' . $lastAnalysis)->getGraphEdge()->all();
                 // Durch alle Likes UND Kommentare iterieren
                 foreach (array_merge($likes, $comments) as $data) {
                     // Überprüfe ob es sich gerade um ein Kommentar handelt
@@ -153,8 +153,8 @@ class FacebookPageController extends Controller
                     // Überprüfe ob der User schon bekannt ist (bei dieser FB-Seite)
                     $registeredUser = FacebookUser::where('facebook_id', $data['id']);
                     if ($registeredUser->exists()) {
-                        $newUser = $registeredUser->first()->get();
-                        $newUser->count = ++$newUser->count;
+                        $newUser = $registeredUser->first();
+                        $newUser->count++;
                     } else {
                         // Erstelle neuen Nutzer Eintrag
                         $newUser = new FacebookUser;
@@ -164,11 +164,15 @@ class FacebookPageController extends Controller
                     }
                     $newUser->save();
                 }
+            } catch (\Facebook\Exceptions\FacebookResponseException $e) {
+                if ($e->getCode() == 100) {
+                    continue;
+                } else {
+                    $fbpage->analyzing = false;
+                    $fbpage->save();
+                    exit($e->getMessage());
+                }
             }
-        } catch (\Facebook\Exceptions\FacebookResponseException $e) {
-            $fbpage->analyzing = false;
-            $fbpage->save();
-            exit($e->getMessage());
         }
 
         $fbpage->analyzing = false;

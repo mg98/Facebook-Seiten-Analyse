@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Collection;
 
 class FacebookPage extends Model
 {
@@ -28,11 +29,11 @@ class FacebookPage extends Model
      *
      * @return Collection
      */
-    public function getUsers() {
+    public function users() {
         $this->load('posts.users');
         $users = $this->posts->lists('users');
-        $collection = new Collection();
-        foreach($users as $postUser){
+        $collection = new Collection;
+        foreach($users as $postUser) {
             $collection = $collection->merge($postUser);
         }
         return $collection;

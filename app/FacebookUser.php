@@ -11,6 +11,7 @@ class FacebookUser extends Model
     protected $fillable = [
         'facebook_post_id',
         'facebook_id',
-        'name'
+        'name',
+        'count'
     ];
 }

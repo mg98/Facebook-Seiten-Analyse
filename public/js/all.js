@@ -14,6 +14,8 @@ $(function() {
             .removeClass("fa-play")
             .addClass("fa-circle-o-notch fa-spin fa-1x fa-fw margin-bottom");
 
+        $("title").text("Analysiere ...")
+
         $.get(href, function(res) {
             if (res == 'success') {
                 window.location.href = href + "/success";
@@ -22,7 +24,6 @@ $(function() {
             }
 
         });
-
 
         $("#alerts .alert").hide();
         $("#alerts .alert-info").slideDown();
