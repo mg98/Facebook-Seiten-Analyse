@@ -26,6 +26,10 @@ class FacebookPageController extends Controller
             'default_graph_version' => 'v2.5',
             'default_access_token' => env('FB_ACCESSTOKEN')
         ]);
+        $llat = $this->fb->get(
+'/oauth/access_token?grant_type=fb_exchange_token&client_id=234245193613435&client_secret=6c0d53c496285ced42cf6b72ae893956&fb_exchange_token=EAADVC3WOQHsBABL8TwjSF8zZBMCHwupc4COEZB4ncYyKfpttxyIMaXJjYZBVz303wxcttdmaZA4G3bA23AqkwMReBhyMMMmzvAXXO46oZB9B1sbuRjlZBnb1hEe7UsFaQDFlYEnKIZBJQufIETlFln64cGNGUW8Idk5KjkLOyQuiPVxGtWXxwkp'
+        );
+        //dd($llat);
     }
 
     /**
@@ -63,7 +67,7 @@ class FacebookPageController extends Controller
     public function show(Request $request) {
         $fbpage = $request->get('fbpage');
 
-        $posts = $fbpage->getPosts()->paginate(20);
+        $posts = $fbpage->posts()->paginate(20);
 
         return view('fbpage/show', compact('fbpage', 'posts'));
     }
@@ -77,12 +81,12 @@ class FacebookPageController extends Controller
     public function getPosts(Request $request) {
         $fbpage = $request->get('fbpage');
         // Posts anfordern
-        if (!FacebookPost::where('page_id', $fbpage->id)->exists()) {
+        if (!FacebookPost::where('facebook_page_id', $fbpage->id)->exists()) {
             // Wenn es zu dieser Facebook Seite noch keine gibt, hol alle
             $posts = $this->fb->get($fbpage->facebook_id . '/posts?limit=100')->getGraphEdge();
         } else {
             // Sonst hol nur die Posts seit dem letzten Eintrag
-            $latestPost = FacebookPost::where('page_id', $fbpage->id)->orderBy('published_at', 'desc')->first();
+            $latestPost = FacebookPost::where('facebook_page_id', $fbpage->id)->orderBy('published_at', 'desc')->first();
             $lastDay = date('Y-m-d', strtotime($latestPost['published_at']));
             $posts = $this->fb->get($fbpage->facebook_id . '/posts?limit=100&since=' . $lastDay)->getGraphEdge();
         }
@@ -95,7 +99,7 @@ class FacebookPageController extends Controller
                 continue;
             }
             $newPost = new FacebookPost;
-            $newPost->page_id = $fbpage->id;
+            $newPost->facebook_page_id = $fbpage->id;
             $newPost->facebook_id = $post['id'];
             $text = array_key_exists('message', $post) ? $post['message'] : $post['story'];
             $newPost->text = substr($text, 0, 50);
@@ -134,23 +138,30 @@ class FacebookPageController extends Controller
         try {
             foreach ($fbpage->getPosts()->orderBy('id', 'desc')->get() as $post) {
                 // Datum des zuletzt hinzugefügten Usereintrags ziehen
-                $lastEntry = FacebookUser::where('post_id', $post->id)->orderBy('id', 'desc')->first();
+                $lastEntry = $post->getUsers()->orderBy('id', 'desc')->first();
                 $lastAnalysis = strtotime($lastEntry['created_at']) + 1;
                 // Likes und Kommentare ziehen
                 $likes = $this->fb->get($post->facebook_id . '/likes?limit=500&since=' . $lastAnalysis)->getGraphEdge()->all();
                 $comments = $this->fb->get($post->facebook_id . '/comments?limit=500&since=' . $lastAnalysis)->getGraphEdge()->all();
                 // Durch alle Likes UND Kommentare iterieren
                 foreach (array_merge($likes, $comments) as $data) {
-                    // Überprüfen ob es sich gerade um ein Kommentar handelt
+                    // Überprüfe ob es sich gerade um ein Kommentar handelt
                     $data = $data->all();
                     if (array_key_exists('from', $data)) {
                         $data = $data['from']->all();
                     }
-                    // Erstelle neuen Nutzer Eintrag
-                    $newUser = new FacebookUser;
-                    $newUser->post_id = $post['id'];
-                    $newUser->facebook_id = $data['id'];
-                    $newUser->name = $data['name'];
+                    // Überprüfe ob der User schon bekannt ist (bei dieser FB-Seite)
+                    $registeredUser = FacebookUser::where('facebook_id', $data['id']);
+                    if ($registeredUser->exists()) {
+                        $newUser = $registeredUser->first()->get();
+                        $newUser->count = ++$newUser->count;
+                    } else {
+                        // Erstelle neuen Nutzer Eintrag
+                        $newUser = new FacebookUser;
+                        $newUser->facebook_post_id = $post['id'];
+                        $newUser->facebook_id = $data['id'];
+                        $newUser->name = $data['name'];
+                    }
                     $newUser->save();
                 }
             }

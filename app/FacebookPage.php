@@ -18,8 +18,24 @@ class FacebookPage extends Model
      *
      * @return mixed
      */
-    public function getPosts() {
-        return FacebookPost::where('page_id', $this->id)->orderBy('published_at', 'desc');
+    public function posts() {
+        return $this->hasMany('App\FacebookPost')->orderBy('published_at', 'desc');
+    }
+
+    /**
+     * Holt sich alle gesammelten Nutzer die dieser
+     * Seite zugehören
+     *
+     * @return Collection
+     */
+    public function getUsers() {
+        $this->load('posts.users');
+        $users = $this->posts->lists('users');
+        $collection = new Collection();
+        foreach($users as $postUser){
+            $collection = $collection->merge($postUser);
+        }
+        return $collection;
     }
 
 }

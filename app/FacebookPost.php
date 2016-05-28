@@ -11,14 +11,14 @@ class FacebookPost extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'page_id',
+        'facebook_page_id',
         'facebook_id',
         'text',
         'published_at'
     ];
 
-    public function getCollectedUsers() {
-        return FacebookUser::where('post_id', $this->id);
+    public function users() {
+        return $this->hasMany('App\FacebookUser');
     }
 
 }

@@ -9,7 +9,7 @@ class FacebookUser extends Model
     protected $table = 'facebook_users';
 
     protected $fillable = [
-        'post_id',
+        'facebook_post_id',
         'facebook_id',
         'name'
     ];

@@ -62,7 +62,7 @@
                                 <tr>
                                     <td>{{ $post->text }}</td>
                                     <td>{{ $post->published_at }}</td>
-                                    <td>{{ count($post->getCollectedUsers()->get()) }}</td>
+                                    <td>{{ count($post->users()->get()) }}</td>
                                     <td>
                                         <a href="http://facebook.com/{{ $post->facebook_id }}" target="_blank" title="Auf Facebook öffnen">
                                             <i class="fa fa-facebook-square" aria-hidden="true"></i>
