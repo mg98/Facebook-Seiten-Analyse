@@ -33,7 +33,7 @@ class FacebookPage extends Model
         $this->load('posts.users');
         $users = $this->posts->lists('users');
         $collection = new Collection;
-        foreach($users as $postUser) {
+        foreach ($users as $postUser) {
             $collection = $collection->merge($postUser);
         }
         return $collection;

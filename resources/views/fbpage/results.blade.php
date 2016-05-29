@@ -13,6 +13,8 @@
                             <li role="presentation" class="active"><a href="#">Analyse</a></li>
                         </ul>
 
+                        {{-- @include('pagination', ['paginator' => $user_pagination, 'amount_of_pages' => $amount_of_pages]) --}}
+
                         {{-- Posts Tabelle --}}
                         <table class="table table-hover users">
                             <tr>
@@ -39,7 +41,7 @@
 
                         {{-- Pagination --}}
                         <div class="center">
-                            {{ $pagination }}
+                            {{ $pagination->render() }}
                         </div>
                     </div>
                 </div>

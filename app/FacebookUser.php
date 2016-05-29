@@ -14,4 +14,5 @@ class FacebookUser extends Model
         'name',
         'count'
     ];
+
 }

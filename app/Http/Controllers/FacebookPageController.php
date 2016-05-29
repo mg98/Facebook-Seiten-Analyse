@@ -6,10 +6,11 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use \Facebook\Facebook;
-use \App\FacebookPage;
-use \App\FacebookPost;
-use \App\FacebookUser;
+use App\FacebookPage;
+use App\FacebookPost;
+use App\FacebookUser;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Pagination;
 
 class FacebookPageController extends Controller
 {
@@ -116,10 +117,11 @@ class FacebookPageController extends Controller
      */
     public function showResults(Request $request) {
         $fbpage = $request->get('fbpage');
+        $fbusers = $fbpage->users();
         $page = isset($_GET['page']) && intval($_GET['page']) ? $_GET['page'] : 1;
-        $users = $fbpage->users()->sortByDesc('count')->forPage($page, 15);
-        $paginator = new \Illuminate\Pagination\Paginator($fbpage->users()->sortByDesc('count'), 15, $page);
-        $pagination = $paginator->links();
+        $users = $fbusers->sortByDesc('count')->forPage($page, 15);
+        $pagination = new Pagination\LengthAwarePaginator($fbusers->all(), $fbusers->count(), 15, $page);
+        $pagination->setPath($request->getPathInfo());
 
         return view('fbpage/results', compact('fbpage', 'users', 'pagination'));
     }
