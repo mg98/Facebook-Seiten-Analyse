@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
+use Cache;
 use App\Http\Requests;
 use \Facebook\Facebook;
 use App\FacebookPage;
@@ -27,8 +27,6 @@ class FacebookPageController extends Controller
             'default_graph_version' => 'v2.5',
             'default_access_token' => env('FB_ACCESSTOKEN')
         ]);
-        //$llat = $this->fb->get('/oauth/access_token?grant_type=fb_exchange_token&client_id=234245193613435&client_secret=6c0d53c496285ced42cf6b72ae893956&fb_exchange_token=EAADVC3WOQHsBABL8TwjSF8zZBMCHwupc4COEZB4ncYyKfpttxyIMaXJjYZBVz303wxcttdmaZA4G3bA23AqkwMReBhyMMMmzvAXXO46oZB9B1sbuRjlZBnb1hEe7UsFaQDFlYEnKIZBJQufIETlFln64cGNGUW8Idk5KjkLOyQuiPVxGtWXxwkp');
-        //dd($llat);
     }
 
     /**
@@ -116,14 +114,22 @@ class FacebookPageController extends Controller
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function showResults(Request $request) {
+        $page = isset($_GET['page']) && intval($_GET['page']) ? $_GET['page'] : 1;
+
+        if (Cache::has('result_page_'.$page)) {
+            return Cache::get('result_page_'.$page);
+        }
+
         $fbpage = $request->get('fbpage');
         $fbusers = $fbpage->users();
-        $page = isset($_GET['page']) && intval($_GET['page']) ? $_GET['page'] : 1;
         $users = $fbusers->sortByDesc('count')->forPage($page, 15);
         $pagination = new Pagination\LengthAwarePaginator($fbusers->all(), $fbusers->count(), 15, $page);
         $pagination->setPath($request->getPathInfo());
 
-        return view('fbpage/results', compact('fbpage', 'users', 'pagination'));
+        $result_page = view('fbpage/results', compact('fbpage', 'users', 'pagination'))->render();
+        Cache::put('result_page_'.$page, $result_page, 10);
+
+        return $result_page;
     }
 
     /**
@@ -134,8 +140,6 @@ class FacebookPageController extends Controller
     public function startAnalysis(Request $request) {
         ini_set('max_execution_time', 3600);
         $fbpage = $request->get('fbpage');
-        $fbpage->analyzing = true;
-        $fbpage->save();
 
         foreach ($fbpage->posts()->get() as $post) {
             try {
@@ -177,9 +181,35 @@ class FacebookPageController extends Controller
             }
         }
 
-        $fbpage->analyzing = false;
+        // Alten Cache der Ergebnisseite löschen und neuen erstellen
+        Cache::flush();
+        $fbusers = $fbpage->users();
+        $result_page_path = substr($request->getPathInfo(), 0, nth_strpos($request->getPathInfo(), '/', 3));
+        for ($page = 1; $page < $fbusers->count(); $page++) {
+            $users = $fbusers->sortByDesc('count')->forPage($page, 15);
+            $pagination = new Pagination\LengthAwarePaginator($fbusers->all(), $fbusers->count(), 15, $page);
+            $pagination->setPath($result_page_path);
+            $result_page = view('fbpage/results', compact('fbpage', 'users', 'pagination'))->render();
+            Cache::put('result_page_'.$page, $result_page, 10);
+        }
+
         $fbpage->save();
+
         exit('success');
+    }
+
+    /**
+     * Holt einen Access Token der erst in 2 Monaten ausläuft
+     *
+     * @return string
+     */
+    public function getAccessToken() {
+        //$getLlat = $this->fb->get('/oauth/access_token?grant_type=fb_exchange_token&client_id='.env('FB_APPID').'&client_secret='.env('FB_SECRET').'&fb_exchange_token='.env('FB_ACCESSTOKEN'));
+        //$llat = $getLlat->getDecodedBody()['access_token'];
+        //return $llat;
+
+        $accessToken = $this->fb->get('/oauth/access_token?client_id='.env('FB_APPID').'&client_secret='.env('FB_SECRET').'&grant_type=fb_exchange_token&fb_exchange_token='.env('FB_ACCESSTOKEN'));
+        return $accessToken;
     }
 
 }

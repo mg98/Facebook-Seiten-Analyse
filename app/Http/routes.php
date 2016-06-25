@@ -11,6 +11,9 @@
 |
 */
 
+// Long Lived Access Token
+Route::get('/getaccesstoken', 'FacebookPageController@getAccessToken');
+
 // Authentication routes...
 Route::get('login', 'Auth\AuthController@showLoginForm');
 Route::post('login', 'Auth\AuthController@login');
@@ -51,3 +54,4 @@ Route::group(['middleware' => 'auth'], function () {
         });
     });
 });
+

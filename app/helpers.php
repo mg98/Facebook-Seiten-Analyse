@@ -1,9 +1,10 @@
 <?php
 
 /**
- * Schöner var_dump
+ * Formatierter var_dump
  *
  * @param mixed $var
+ * @return void
  */
 function debug($var) {
     echo '<pre>';
@@ -31,4 +32,25 @@ function niceEncode($string) {
  */
 function niceDecode($string) {
     return str_replace('_', ' ', $string);
+}
+
+/**
+ * Findet das n-te Vorkommen einer Zeichenkette
+ * innerhalb einer anderen Zeichenkette
+ *
+ * @param string $haystack
+ * @param string $needle
+ * @param int $occurence
+ * @return bool|int
+ */
+function nth_strpos($haystack, $needle, $occurence = 1) {
+    $ct = 0;
+    $pos = 0;
+    while (($pos = strpos($haystack, $needle, $pos)) !== false) {
+        if (++$ct == $occurence) {
+            return $pos;
+        }
+        $pos++;
+    }
+    return false;
 }
