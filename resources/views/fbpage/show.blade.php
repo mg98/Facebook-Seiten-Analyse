@@ -51,7 +51,7 @@
                         </div>
 
                         {{-- Posts Tabelle --}}
-                        <table class="table table-hover posts">
+                        <table id="posts" class="table table-hover">
                             <tr>
                                 <th>Post</th>
                                 <th>Veröffentlicht</th>
@@ -64,6 +64,9 @@
                                     <td>{{ $post->published_at }}</td>
                                     <td>{{ count($post->users()->get()) }}</td>
                                     <td>
+                                        <a href="{{ url(niceEncode($fbpage->name) . '/markieren') }}" title="Markierte Personen hinzufügen">
+                                            <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                                        </a>
                                         <a href="http://facebook.com/{{ $post->facebook_id }}" target="_blank" title="Auf Facebook öffnen">
                                             <i class="fa fa-facebook-square" aria-hidden="true"></i>
                                         </a>

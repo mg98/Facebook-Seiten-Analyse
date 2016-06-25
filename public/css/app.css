@@ -11,16 +11,19 @@ div.center {
 #action-bar {
   margin: 10px 0 10px 0; }
 
-table.posts tr th:nth-child(2), table.posts tr td:nth-child(2) {
+#posts th:nth-child(2), #posts td:nth-child(2) {
   width: 175px; }
 
-table.posts tr th:nth-child(3), table.posts tr td:nth-child(3) {
+#posts th:nth-child(3), #posts td:nth-child(3) {
   width: 125px;
   text-align: center; }
 
-table.posts tr th:nth-child(4), table.posts tr td:nth-child(4) {
+#posts th:nth-child(4), #posts td:nth-child(4) {
   width: 75px;
   text-align: right; }
+
+#posts .fa {
+  margin-left: 10px; }
 
 #alerts {
   margin-top: 10px; }

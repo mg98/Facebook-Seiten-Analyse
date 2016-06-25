@@ -17,7 +17,7 @@ div.center {
   margin: 10px 0 10px 0;
 }
 
-table.posts tr {
+#posts {
   th:nth-child(2), td:nth-child(2) {
     width: 175px;
   }
@@ -28,6 +28,10 @@ table.posts tr {
   th:nth-child(4), td:nth-child(4) {
     width: 75px;
     text-align: right;
+  }
+
+  .fa {
+    margin-left: 10px;
   }
 }
 
