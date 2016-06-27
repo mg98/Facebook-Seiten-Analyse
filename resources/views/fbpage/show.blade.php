@@ -62,7 +62,7 @@
                             </tr>
                             @foreach ($posts as $post)
                                 <tr>
-                                    <td>{{ $post->text }}</td>
+                                    <td>{!! $post->text !!}</td>
                                     <td>{{ $post->published_at }}</td>
                                     <td>{{ count($post->users()->get()) }}</td>
                                     <td>
