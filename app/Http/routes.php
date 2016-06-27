@@ -12,7 +12,7 @@
 */
 
 // Long Lived Access Token
-Route::get('/getaccesstoken', 'FacebookPageController@getAccessToken');
+Route::get('getaccesstoken', 'FacebookPageController@getAccessToken');
 
 // Authentication routes...
 Route::get('login', 'Auth\AuthController@showLoginForm');
@@ -25,6 +25,7 @@ Route::get('/', 'HomeController@index');
 
 // Eingeloggter Bereich
 Route::group(['middleware' => 'auth'], function () {
+
     // Seite hinzufügen
     Route::get('neu', function() {
         return view('fbpage/new');
@@ -33,14 +34,20 @@ Route::group(['middleware' => 'auth'], function () {
 
     // Facebook Seiten Ansicht
     Route::group(['prefix' => '{fbpage}', 'middleware' => 'fbpage'], function () {
+
         // Posts Übersicht
         Route::get('/', 'FacebookPageController@show');
-        // Analyse
-        Route::get('analyse', 'FacebookPageController@showResults');
         // Posts nachladen
         Route::get('nachladen', 'FacebookPageController@getPosts');
+
+        // Facebook Seiten im Post markieren
+        Route::group(['prefix' => '{fbpost}', 'middleware' => 'fbpost'], function () {
+            Route::get('markieren', 'PostMarkingController@index');
+        });
+
         // Analyse
         Route::group(['prefix' => 'analyse'], function () {
+
             Route::get('/', 'FacebookPageController@showResults');
             Route::get('start', 'FacebookPageController@startAnalysis');
             Route::get('start/success', function() {
@@ -51,7 +58,10 @@ Route::group(['middleware' => 'auth'], function () {
                 Session::flash('failure', $_GET['exception']);
                 return Redirect::back();
             });
+
         });
+
     });
+
 });
 

@@ -11,6 +11,7 @@ use App\FacebookPost;
 use App\FacebookUser;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Pagination;
+use \Illuminate\View\View;
 
 class FacebookPageController extends Controller
 {
@@ -33,7 +34,7 @@ class FacebookPageController extends Controller
      * Neue Facebook Seite erstellen
      *
      * @param Request $request
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @return View
      */
     public function store(Request $request) {
         $this->validate($request, [
@@ -59,7 +60,7 @@ class FacebookPageController extends Controller
      * Ansichtsseite
      *
      * @param Request $request
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @return View
      */
     public function show(Request $request) {
         $fbpage = $request->get('fbpage');
@@ -111,7 +112,7 @@ class FacebookPageController extends Controller
      * Ergebnisseite einer Seite/ Auswertung der Analyse
      *
      * @param $fbpage
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @return View
      */
     public function showResults(Request $request) {
         $page = isset($_GET['page']) && intval($_GET['page']) ? $_GET['page'] : 1;
@@ -136,10 +137,15 @@ class FacebookPageController extends Controller
      * Startet Nutzeranalyse (Aufruf über AJAX)
      *
      * @param Request $request
+     * @return string
      */
     public function startAnalysis(Request $request) {
         ini_set('max_execution_time', 3600);
+
         $fbpage = $request->get('fbpage');
+
+        $fbpage->analyzing = true;
+        $fbpage->save();
 
         foreach ($fbpage->posts()->get() as $post) {
             try {
@@ -193,6 +199,7 @@ class FacebookPageController extends Controller
             Cache::put('result_page_'.$page, $result_page, 10);
         }
 
+        $fbpage->analyzing = false;
         $fbpage->save();
 
         exit('success');

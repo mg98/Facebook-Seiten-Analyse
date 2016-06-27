@@ -3,26 +3,25 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use \App\FacebookPage;
-use Illuminate\Support\Facades\Redirect;
+use \App\FacebookPost;
 
-class FacebookPageRegistered
+class FacebookPostRegistered
 {
     /**
-     * Handle an incoming request.
+     * Überprüft ob der angeforderte Post existiert
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
+     * @param \Illuminate\Http\Request $request
+     * @param Closure $next
      * @return mixed
      */
     public function handle($request, Closure $next)
     {
-        $fbpage = FacebookPage::where('name', niceDecode($request->fbpage));
+        $fbpost = FacebookPost::find($request->fbpost);
 
-        if (!$fbpage->exists()) {
-             abort(404, 'Die angeforderte Facebook-Seite ist nicht registriert.');
+        if (!$fbpost->exists()) {
+             abort(404, 'Der angeforderte Facebook Post konnte nicht gefunden werden.');
         } else {
-            $request->attributes->add(['fbpage' => $fbpage->first()]);
+            $request->attributes->add(['fbpost' => $fbpost->first()]);
             return $next($request);
         }
     }

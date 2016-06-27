@@ -64,7 +64,7 @@
                                     <td>{{ $post->published_at }}</td>
                                     <td>{{ count($post->users()->get()) }}</td>
                                     <td>
-                                        <a href="{{ url(niceEncode($fbpage->name) . '/markieren') }}" title="Markierte Personen hinzufügen">
+                                        <a href="{{ url(niceEncode($fbpage->name) . '/' . $post->id . '/markieren') }}" title="Markierte Personen hinzufügen">
                                             <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                                         </a>
                                         <a href="http://facebook.com/{{ $post->facebook_id }}" target="_blank" title="Auf Facebook öffnen">

@@ -4,15 +4,14 @@ namespace App\Http\Middleware;
 
 use Closure;
 use \App\FacebookPage;
-use Illuminate\Support\Facades\Redirect;
 
 class FacebookPageRegistered
 {
     /**
-     * Handle an incoming request.
+     * Überprüft ob die angeforderte Facebook Seite registriert ist
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
+     * @param \Illuminate\Http\Request $request
+     * @param Closure $next
      * @return mixed
      */
     public function handle($request, Closure $next)
