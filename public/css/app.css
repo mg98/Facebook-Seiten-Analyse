@@ -10,6 +10,8 @@ div.center {
 
 #action-bar {
   margin: 10px 0 10px 0; }
+  #action-bar a {
+    display: inline-block; }
 
 #posts th:nth-child(2), #posts td:nth-child(2) {
   width: 175px; }
