@@ -37,17 +37,19 @@
                                     <i class="fa fa-refresh" aria-hidden="true"></i> Posts nachladen
                                 </button>
                             </a>
-                            <a id="start-analysis" href="{{ url(niceEncode($fbpage->name) . '/analyse/start') }}">
-                                @if ($fbpage->analyzing)
-                                    <button type="button" class="btn btn-default disabled">
-                                        <i class="fa fa-circle-o-notch fa-spin fa-1x fa-fw margin-bottom"></i> Nutzeranalyse starten
+                            @if ($fbpage->analyzing)
+                                <a id="stop-analysis" href="{{ url(niceEncode($fbpage->name) . '/analyse/stop') }}">
+                                    <button type="button" class="btn btn-default">
+                                        <i class="fa fa-stop"></i> Nutzeranalyse stoppen
                                     </button>
-                                @else
+                                </a>
+                            @else
+                                <a id="start-analysis" href="{{ url(niceEncode($fbpage->name) . '/analyse/start') }}">
                                     <button type="button" class="btn btn-default">
                                         <i class="fa fa-play" aria-hidden="true"></i> Nutzeranalyse starten
                                     </button>
-                                @endif
-                            </a>
+                                </a>
+                            @endif
                         </div>
 
                         {{-- Posts Tabelle --}}

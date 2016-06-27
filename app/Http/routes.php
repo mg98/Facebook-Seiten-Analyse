@@ -49,15 +49,20 @@ Route::group(['middleware' => 'auth'], function () {
         Route::group(['prefix' => 'analyse'], function () {
 
             Route::get('/', 'FacebookPageController@showResults');
-            Route::get('start', 'FacebookPageController@startAnalysis');
-            Route::get('start/success', function() {
-                Session::flash('success', true);
-                return Redirect::back();
+
+            Route::group(['prefix' => 'start'], function () {
+                Route::get('/', 'FacebookPageController@startAnalysis');
+                Route::get('success', function() {
+                    Session::flash('success', true);
+                    return Redirect::back();
+                });
+                Route::get('failure', function() {
+                    Session::flash('failure', $_GET['exception']);
+                    return Redirect::back();
+                });
             });
-            Route::get('start/failure', function() {
-                Session::flash('failure', $_GET['exception']);
-                return Redirect::back();
-            });
+
+            Route::get('stop', 'FacebookPageController@stopAnalysis');
 
         });
 

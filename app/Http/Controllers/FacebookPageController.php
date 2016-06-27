@@ -16,6 +16,9 @@ use \Illuminate\View\View;
 class FacebookPageController extends Controller
 {
 
+    /**
+     * @var Facebook $fb
+     */
     public $fb = null;
 
     /**
@@ -140,7 +143,7 @@ class FacebookPageController extends Controller
      * @return string
      */
     public function startAnalysis(Request $request) {
-        ini_set('max_execution_time', 3600);
+        ini_set('max_execution_time', 3600 * 24);
 
         $fbpage = $request->get('fbpage');
 
@@ -203,6 +206,13 @@ class FacebookPageController extends Controller
         $fbpage->save();
 
         exit('success');
+    }
+
+    public function stopAnalysis(Request $request) {
+        $fbpage = $request->get('fbpage');
+        $fbpage->analyzing = false;
+        $fbpage->save();
+        return Redirect::back();
     }
 
     /**
