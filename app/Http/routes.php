@@ -51,7 +51,7 @@ Route::group(['middleware' => 'auth'], function () {
             Route::get('/', 'FacebookPageController@showResults');
 
             Route::group(['prefix' => 'start'], function () {
-                Route::get('/', 'FacebookPageController@startAnalysis');
+                Route::get('/', 'UserAnalysisController@start');
                 Route::get('success', function() {
                     Session::flash('success', true);
                     return Redirect::back();
@@ -62,7 +62,7 @@ Route::group(['middleware' => 'auth'], function () {
                 });
             });
 
-            Route::get('stop', 'FacebookPageController@stopAnalysis');
+            Route::get('stop', 'UserAnalysisController@stop');
 
         });
 
