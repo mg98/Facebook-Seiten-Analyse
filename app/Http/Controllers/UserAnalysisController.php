@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Providers\FacebookApiServiceProvider;
 use Illuminate\Http\Request;
 use Cache;
 use App\Http\Requests;
-use \Facebook\Facebook;
 use App\FacebookPage;
 use App\FacebookPost;
 use App\FacebookUser;
@@ -25,12 +25,7 @@ class UserAnalysisController extends Controller
      * Facebook Graph API ansprechen
      */
     public function __construct() {
-        $this->fb = new Facebook([
-            'app_id' => env('FB_APPID'),
-            'app_secret' => env('FB_SECRET'),
-            'default_graph_version' => 'v2.5',
-            'default_access_token' => env('FB_ACCESSTOKEN')
-        ]);
+        $this->fb = FacebookApiServiceProvider::get();
     }
 
     /**
