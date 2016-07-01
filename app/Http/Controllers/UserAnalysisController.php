@@ -8,6 +8,7 @@ use App\Http\Requests;
 use \Facebook\Facebook;
 use App\FacebookPage;
 use App\FacebookPost;
+use App\FacebookUser;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Pagination;
 use \Illuminate\View\View;
