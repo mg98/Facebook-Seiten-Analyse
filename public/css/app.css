@@ -23,6 +23,8 @@ div.center {
 #posts th:nth-child(4), #posts td:nth-child(4) {
   width: 75px;
   text-align: right; }
+  #posts th:nth-child(4) a, #posts td:nth-child(4) a {
+    display: inline-block; }
 
 #posts .fa {
   margin-left: 10px; }
