@@ -83,7 +83,7 @@ class UserAnalysisController extends Controller
         }
 
         // Alten Cache der Ergebnisseite löschen und neuen erstellen
-        Cache::flush();
+        Cache::tags(['results', $fbpage->id])->flush();
         $fbusers = $fbpage->users();
         $result_page_path = substr($request->getPathInfo(), 0, nth_strpos($request->getPathInfo(), '/', 3));
         for ($page = 1; $page < 3; $page++) {
@@ -91,7 +91,7 @@ class UserAnalysisController extends Controller
             $pagination = new Pagination\LengthAwarePaginator($fbusers->all(), $fbusers->count(), 15, $page);
             $pagination->setPath($result_page_path);
             $result_page = view('fbpage/results', compact('fbpage', 'users', 'pagination'))->render();
-            Cache::put('results_'.$fbpage->id.'_'.$page, $result_page, 10);
+            Cache::tags(['results', $fbpage->id])->forever($page, $result_page);
         }
 
         $fbpage->analyzing = false;
@@ -125,8 +125,8 @@ class UserAnalysisController extends Controller
         $page = isset($_GET['page']) && intval($_GET['page']) ? $_GET['page'] : 1;
         $fbpage = $request->get('fbpage');
 
-        if (Cache::has('results_'.$fbpage->id.'_'.$page)) {
-            return Cache::get('results_'.$fbpage->id.'_'.$page);
+        if (Cache::tags(['results', $fbpage->id])->has($page)) {
+            return Cache::tags(['results', $fbpage->id])->get($page);
         }
 
         $fbusers = $fbpage->users();
@@ -135,7 +135,7 @@ class UserAnalysisController extends Controller
         $pagination->setPath($request->getPathInfo());
 
         $result_page = view('fbpage/results', compact('fbpage', 'users', 'pagination'))->render();
-        Cache::put('results_'.$fbpage->id.'_'.$page, $result_page, 10);
+        Cache::tags(['results', $fbpage->id])->forever($page, $result_page);
 
         return $result_page;
     }
