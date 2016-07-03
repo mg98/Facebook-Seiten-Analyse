@@ -86,7 +86,7 @@ class UserAnalysisController extends Controller
         Cache::flush();
         $fbusers = $fbpage->users();
         $result_page_path = substr($request->getPathInfo(), 0, nth_strpos($request->getPathInfo(), '/', 3));
-        for ($page = 1; $page < $fbusers->count(); $page++) {
+        for ($page = 1; $page < 3; $page++) {
             $users = $fbusers->sortByDesc('count')->forPage($page, 15);
             $pagination = new Pagination\LengthAwarePaginator($fbusers->all(), $fbusers->count(), 15, $page);
             $pagination->setPath($result_page_path);
