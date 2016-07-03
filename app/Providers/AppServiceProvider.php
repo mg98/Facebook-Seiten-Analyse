@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\Http\Controllers\FacebookPageController;
+use App\Providers\FacebookApiServiceProvider;
 use Illuminate\Support\ServiceProvider;
 use Validator;
 use App\FacebookPage;
@@ -18,9 +18,9 @@ class AppServiceProvider extends ServiceProvider
     {
         // Facebook page validator
         Validator::extend('isFacebookPage', function($attribute, $value, $parameters, $validator) {
-            $fbc = new FacebookPageController;
+            $fb = FacebookApiServiceProvider::get();
             try {
-                $response = $fbc->fb->get($value);
+                $response = $fb->get($value);
                 $pageNode = $response->getGraphPage();
                 return boolval($pageNode);
             } catch(\Facebook\Exceptions\FacebookResponseException $e) {
@@ -34,9 +34,26 @@ class AppServiceProvider extends ServiceProvider
 
         // Überprüft ob die Seite nicht schon vorher eingetragen wurde
         Validator::extend('pageNotRegistered', function($attribute, $value, $parameters, $validator) {
-            $fbc = new FacebookPageController;
+            $fb = FacebookApiServiceProvider::get();
             try {
-                $response = $fbc->fb->get($value);
+                $response = $fb->get($value);
+                $pageNode = $response->getGraphPage();
+                $facebookId = $pageNode->all()['id'];
+                return !FacebookPage::where('facebook_id', $facebookId)->exists();
+            } catch(\Facebook\Exceptions\FacebookResponseException $e) {
+                // When Graph returns an error
+                return false;
+            } catch(\Facebook\Exceptions\FacebookSDKException $e) {
+                // When validation fails or other local issues
+                die('Facebook SDK returned an error: ' . $e->getMessage());
+            }
+        });
+
+        // Überprüft ob die Seite nicht schon vorher an diesem Post markiert wurde
+        Validator::extend('pageNotMarked', function($attribute, $value, $parameters, $validator) {
+            $fb = FacebookApiServiceProvider::get();
+            try {
+                $response = $fb->get($value);
                 $pageNode = $response->getGraphPage();
                 $facebookId = $pageNode->all()['id'];
                 return !FacebookPage::where('facebook_id', $facebookId)->exists();

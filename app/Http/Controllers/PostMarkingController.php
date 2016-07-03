@@ -7,6 +7,7 @@ use App\Http\Requests;
 use App\FacebookPage;
 use App\FacebookPost;
 use App\FacebookUser;
+use \Illuminate\View\View;
 
 class PostMarkingController extends Controller
 {
@@ -23,6 +24,23 @@ class PostMarkingController extends Controller
         $post = $request->get('fbpost');
 
         return view('fbpage/mark', compact('fbpage', 'post'));
+    }
+
+    /**
+     * Neue Markierung in Facebook Post hinzufügen
+     *
+     * @param Request $request
+     * @return View
+     */
+    public function add(Request $request) {
+        $this->validate($request, [
+            'page' => 'isFacebookPage'
+        ]);
+        $this->validate($request, [
+            'page' => 'pageNotRegistered'
+        ]);
+
+        return Redirect::back();
     }
 
 }

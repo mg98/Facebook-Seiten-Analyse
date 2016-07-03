@@ -19,7 +19,7 @@ class FacebookPageController extends Controller
     /**
      * @var Facebook $fb
      */
-    public $fb = null;
+    private $fb = null;
 
     /**
      * Facebook Graph API ansprechen
@@ -34,7 +34,7 @@ class FacebookPageController extends Controller
      * @param Request $request
      * @return View
      */
-    public function store(Request $request) {
+    public function add(Request $request) {
         $this->validate($request, [
             'page' => 'isFacebookPage'
         ]);
@@ -51,7 +51,7 @@ class FacebookPageController extends Controller
         $newPage->save();
 
         $request->session()->flash('success', 'Die Facebook Seite "'.$pageNode['name'].'" wurde erfolgreich hinzugefügt!');
-        return view('fbpage/new');
+        return Redirect::back();
     }
 
     /**

@@ -30,7 +30,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('neu', function() {
         return view('fbpage/new');
     });
-    Route::post('neu', 'FacebookPageController@store');
+    Route::post('neu', 'FacebookPageController@add');
 
     // Facebook Seiten Ansicht
     Route::group(['prefix' => '{fbpage}', 'middleware' => 'fbpage'], function () {
@@ -43,6 +43,7 @@ Route::group(['middleware' => 'auth'], function () {
         // Facebook Seiten im Post markieren
         Route::group(['prefix' => '{fbpost}', 'middleware' => 'fbpost'], function () {
             Route::get('markieren', 'PostMarkingController@index');
+            Route::post('markieren', 'PostMarkingController@add');
         });
 
         // Analyse
