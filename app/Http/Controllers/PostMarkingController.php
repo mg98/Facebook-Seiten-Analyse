@@ -3,15 +3,17 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
 use App\Http\Requests;
+use App\FacebookPage;
+use App\FacebookPost;
+use App\FacebookUser;
 
 class PostMarkingController extends Controller
 {
 
     /**
-     * Rendert Seite zum Verwalten markierter Facebook-
-     * Seiten in einem Post
+     * Rendert Seite zum Verwalten markierter
+     * Facebook-Seiten in einem Post
      *
      * @param Request $request
      * @return View
@@ -20,7 +22,7 @@ class PostMarkingController extends Controller
         $fbpage = $request->get('fbpage');
         $post = $request->get('fbpost');
 
-        return view('fbpage/mark/index', compact('fbpage', 'post'));
+        return view('fbpage/mark', compact('fbpage', 'post'));
     }
 
 }
