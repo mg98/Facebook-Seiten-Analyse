@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 class FacebookPage extends Model
 {
-    protected $table = 'facebookpages';
+    protected $table = 'fb_pages';
 
     protected $fillable = [
         'name',

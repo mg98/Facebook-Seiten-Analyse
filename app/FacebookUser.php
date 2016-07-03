@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class FacebookUser extends Model
 {
-    protected $table = 'facebook_users';
+    protected $table = 'fb_users';
 
     protected $fillable = [
         'facebook_post_id',

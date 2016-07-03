@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class FacebookPost extends Model
 {
-    protected $table = 'posts';
+    protected $table = 'fb_posts';
 
     public $timestamps = false;
 
