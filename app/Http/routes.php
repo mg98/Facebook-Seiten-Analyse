@@ -48,7 +48,7 @@ Route::group(['middleware' => 'auth'], function () {
         // Analyse
         Route::group(['prefix' => 'analyse'], function () {
 
-            Route::get('/', 'FacebookPageController@showResults');
+            Route::get('/', 'UserAnalysisController@showResults');
 
             Route::group(['prefix' => 'start'], function () {
                 Route::get('/', 'UserAnalysisController@start');

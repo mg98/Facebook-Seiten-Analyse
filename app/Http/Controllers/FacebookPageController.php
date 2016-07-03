@@ -107,31 +107,6 @@ class FacebookPageController extends Controller
     }
 
     /**
-     * Ergebnisseite einer Seite/ Auswertung der Analyse
-     *
-     * @param $fbpage
-     * @return View
-     */
-    public function showResults(Request $request) {
-        $page = isset($_GET['page']) && intval($_GET['page']) ? $_GET['page'] : 1;
-
-        if (Cache::has('result_page_'.$page)) {
-            return Cache::get('result_page_'.$page);
-        }
-
-        $fbpage = $request->get('fbpage');
-        $fbusers = $fbpage->users();
-        $users = $fbusers->sortByDesc('count')->forPage($page, 15);
-        $pagination = new Pagination\LengthAwarePaginator($fbusers->all(), $fbusers->count(), 15, $page);
-        $pagination->setPath($request->getPathInfo());
-
-        $result_page = view('fbpage/results', compact('fbpage', 'users', 'pagination'))->render();
-        Cache::put('result_page_'.$page, $result_page, 10);
-
-        return $result_page;
-    }
-
-    /**
      * Holt einen Access Token der erst in 2 Monaten ausläuft
      *
      * @return string

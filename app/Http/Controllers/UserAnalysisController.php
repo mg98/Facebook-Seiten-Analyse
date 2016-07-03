@@ -35,7 +35,7 @@ class UserAnalysisController extends Controller
      * @return string
      */
     public function start(Request $request) {
-        ini_set('max_execution_time', 3600 * 24);
+        ini_set('max_execution_time', 3600);
 
         $fbpage = $request->get('fbpage');
 
@@ -91,7 +91,7 @@ class UserAnalysisController extends Controller
             $pagination = new Pagination\LengthAwarePaginator($fbusers->all(), $fbusers->count(), 15, $page);
             $pagination->setPath($result_page_path);
             $result_page = view('fbpage/results', compact('fbpage', 'users', 'pagination'))->render();
-            Cache::put('result_page_'.$page, $result_page, 10);
+            Cache::put('results_'.$fbpage->id.'_'.$page, $result_page, 10);
         }
 
         $fbpage->analyzing = false;
@@ -101,6 +101,8 @@ class UserAnalysisController extends Controller
     }
 
     /**
+     * Stoppt eine laufende Analyse
+     *
      * @param Request $request
      * @return mixed
      */
@@ -109,5 +111,32 @@ class UserAnalysisController extends Controller
         $fbpage->analyzing = false;
         $fbpage->save();
         return Redirect::back();
+    }
+
+
+
+    /**
+     * Ergebnisseite einer Seite/ Auswertung der Analyse
+     *
+     * @param Request $request
+     * @return View
+     */
+    public function showResults(Request $request) {
+        $page = isset($_GET['page']) && intval($_GET['page']) ? $_GET['page'] : 1;
+        $fbpage = $request->get('fbpage');
+
+        if (Cache::has('results_'.$fbpage->id.'_'.$page)) {
+            return Cache::get('results_'.$fbpage->id.'_'.$page);
+        }
+
+        $fbusers = $fbpage->users();
+        $users = $fbusers->sortByDesc('count')->forPage($page, 15);
+        $pagination = new Pagination\LengthAwarePaginator($fbusers->all(), $fbusers->count(), 15, $page);
+        $pagination->setPath($request->getPathInfo());
+
+        $result_page = view('fbpage/results', compact('fbpage', 'users', 'pagination'))->render();
+        Cache::put('results_'.$fbpage->id.'_'.$page, $result_page, 10);
+
+        return $result_page;
     }
 }
