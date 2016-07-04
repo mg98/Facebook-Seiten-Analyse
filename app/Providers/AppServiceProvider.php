@@ -6,6 +6,7 @@ use App\Providers\FacebookApiServiceProvider;
 use Illuminate\Support\ServiceProvider;
 use Validator;
 use App\FacebookPage;
+use App\PostMark;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -56,7 +57,8 @@ class AppServiceProvider extends ServiceProvider
                 $response = $fb->get($value);
                 $pageNode = $response->getGraphPage();
                 $facebookId = $pageNode->all()['id'];
-                return !FacebookPage::where('facebook_id', $facebookId)->exists();
+                $postId = $parameters[0];
+                return !PostMark::where('facebook_id', $facebookId)->where('post_id', $postId)->exists();
             } catch(\Facebook\Exceptions\FacebookResponseException $e) {
                 // When Graph returns an error
                 return false;
