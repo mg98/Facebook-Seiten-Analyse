@@ -85,13 +85,12 @@ class UserAnalysisController extends Controller
         Cache::tags(['results', $fbpage->id])->flush();
         $fbusers = $fbpage->users();
         $result_page_path = substr($request->getPathInfo(), 0, nth_strpos($request->getPathInfo(), '/', 3));
-        for ($page = 1; $page < 3; $page++) {
-            $users = $fbusers->sortByDesc('count')->forPage($page, 15);
-            $pagination = new Pagination\LengthAwarePaginator($fbusers->all(), $fbusers->count(), 15, $page);
-            $pagination->setPath($result_page_path);
-            $result_page = view('fbpage/results', compact('fbpage', 'users', 'pagination'))->render();
-            Cache::tags(['results', $fbpage->id])->forever($page, $result_page);
-        }
+        // Erstelle Cache für Seite 1
+        $users = $fbusers->sortByDesc('count')->forPage(1, 15);
+        $pagination = new Pagination\LengthAwarePaginator($fbusers->all(), $fbusers->count(), 15, 1);
+        $pagination->setPath($result_page_path);
+        $result_page = view('fbpage/results', compact('fbpage', 'users', 'pagination'))->render();
+        Cache::tags(['results', $fbpage->id])->forever(1, $result_page);
 
         $fbpage->analyzing = false;
         $fbpage->save();
