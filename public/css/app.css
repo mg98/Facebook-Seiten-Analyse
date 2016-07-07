@@ -35,4 +35,10 @@ div.center {
 #alerts .alert-info {
   display: none; }
 
+#post-marks a {
+  color: unset; }
+
+#post-marks .fa-eraser {
+  color: #e04251; }
+
 /*# sourceMappingURL=app.css.map */

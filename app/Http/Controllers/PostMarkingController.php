@@ -7,7 +7,6 @@ use App\Http\Requests;
 use App\FacebookPage;
 use App\FacebookPost;
 use App\FacebookUser;
-use App\Providers\FacebookApiServiceProvider;
 use App\PostMark;
 use \Illuminate\View\View;
 use Illuminate\Support\Facades\Redirect;
@@ -24,7 +23,7 @@ class PostMarkingController extends Controller
      * Facebook Graph API ansprechen
      */
     public function __construct() {
-        $this->fb = FacebookApiServiceProvider::get();
+        $this->fb = \App\Providers\FacebookApiServiceProvider::get();
     }
 
     /**
@@ -37,8 +36,9 @@ class PostMarkingController extends Controller
     public function index(Request $request) {
         $fbpage = $request->get('fbpage');
         $post = $request->get('fbpost');
+        $marks = PostMark::where('post_id', $post->id)->get();
 
-        return view('fbpage/mark', compact('fbpage', 'post'));
+        return view('fbpage/mark', compact('fbpage', 'post', 'marks'));
     }
 
     /**
@@ -64,6 +64,18 @@ class PostMarkingController extends Controller
         $newPostMark->save();
 
         $request->session()->flash('success', 'Die Facebook Seite "'.$pageNode['name'].'" wurde markiert.');
+
+        return Redirect::back();
+    }
+
+    /**
+     * Entfernt eine eingetragene Markierung
+     *
+     * @param Request $request
+     * @return View
+     */
+    public function remove(Request $request) {
+        PostMark::destroy($request->mark);
 
         return Redirect::back();
     }

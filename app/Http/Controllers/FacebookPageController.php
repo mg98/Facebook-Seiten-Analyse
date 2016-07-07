@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Providers\FacebookApiServiceProvider;
 use Illuminate\Http\Request;
 use Cache;
 use App\Http\Requests;
@@ -25,7 +24,7 @@ class FacebookPageController extends Controller
      * Facebook Graph API ansprechen
      */
     public function __construct() {
-        $this->fb = FacebookApiServiceProvider::get();
+        $this->fb = \App\Providers\FacebookApiServiceProvider::get();
     }
 
     /**

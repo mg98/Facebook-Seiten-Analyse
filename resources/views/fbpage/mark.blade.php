@@ -19,7 +19,7 @@
                         @endif
 
                         <p class="text-info">Fügen Sie eine Facebook-Seite hinzu um Personen, welche diese Seite geliket
-                            haben, bei der nalyse zu überspringen und nicht mit in die Datenbank aufzunehmen. Bedenken
+                            haben, bei der Analyse zu überspringen und nicht mit in die Datenbank aufzunehmen. Bedenken
                             Sie, dass bereits bekannte Facebook-Nutzer dadurch nicht automatisch gelöscht werden.</p>
 
                         {!! Form::open(['method' => 'POST']) !!}
@@ -31,10 +31,25 @@
 
                         <hr>
 
-                        <p>
-                            <b>Markiert: </b>
-                            <i>Bisher keine</i>
-                        </p>
+                        <div id="post-marks">
+                            <h5>Markiert: </h5>
+                            @if (count($marks) > 0)
+                                <ul class="list-inline">
+                                    @foreach ($marks as $mark)
+                                        <li>
+                                            <a href="{{ url(niceEncode($fbpage->name) . '/' . $post->id . '/' . $mark->id . '/demarkieren') }}" title="Markierung entfernen">
+                                                <i class="fa fa-eraser" aria-hidden="true"></i>
+                                            </a>
+                                            <a href="http://facebook.com/{{ $mark->facebook_id }}" target="_blank">
+                                                {{ $mark->name }}
+                                            </a>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            @else
+                                <i>Bisher keine</i>
+                            @endif
+                        </div>
 
                     </div>
                 </div>

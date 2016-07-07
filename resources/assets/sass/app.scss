@@ -48,3 +48,12 @@ div.center {
 #alerts .alert-info {
   display: none;
 }
+
+#post-marks {
+  a {
+    color: unset;
+  }
+  .fa-eraser {
+    color: #e04251;
+  }
+}

@@ -44,6 +44,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::group(['prefix' => '{fbpost}', 'middleware' => 'fbpost'], function () {
             Route::get('markieren', 'PostMarkingController@index');
             Route::post('markieren', 'PostMarkingController@add');
+            Route::get('{mark}/demarkieren', 'PostMarkingController@remove');
         });
 
         // Analyse
