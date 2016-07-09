@@ -41,6 +41,12 @@ class UserAnalysisController extends Controller
         $fbpage->analyzing = true;
         $fbpage->save();
 
+        // Datum des zuletzt hinzugefügten Usereintrags ziehen
+        $lastEntry = $fbpage->users()->sortBy(function($fbuser) {
+            return $fbuser->updated_at;
+        })->last();
+        $lastAnalysis = $lastEntry ? strtotime($lastEntry->updated_at) + 1 : 0;
+
         foreach ($fbpage->posts()->get() as $post) {
             try {
                 // Holen der an diesem Post markierten Facebook Seiten
@@ -49,10 +55,6 @@ class UserAnalysisController extends Controller
                 foreach ($markedPages as $postMark) {
                     $markedPagesIds[] = $postMark->facebook_id;
                 }
-
-                // Datum des zuletzt hinzugefügten Usereintrags ziehen
-                $lastEntry = $post->users()->first();
-                $lastAnalysis = strtotime($lastEntry['created_at']) + 1;
 
                 // Likes und Kommentare ziehen
                 $likes = $this->fb->get($post->facebook_id . '/likes?limit=' . env('FB_LIMIT') . '&since=' . $lastAnalysis)->getGraphEdge()->all();
