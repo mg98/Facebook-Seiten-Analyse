@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\PostMark;
 use Illuminate\Http\Request;
 use Cache;
 use App\Http\Requests;
@@ -35,7 +36,6 @@ class UserAnalysisController extends Controller
      */
     public function start(Request $request) {
         ini_set('max_execution_time', 3600);
-
         $fbpage = $request->get('fbpage');
 
         $fbpage->analyzing = true;
@@ -43,12 +43,21 @@ class UserAnalysisController extends Controller
 
         foreach ($fbpage->posts()->get() as $post) {
             try {
+                // Holen der an diesem Post markierten Facebook Seiten
+                $markedPages = PostMark::where('post_id', $post->id)->get();
+                $markedPagesIds = [];
+                foreach ($markedPages as $postMark) {
+                    $markedPagesIds[] = $postMark->facebook_id;
+                }
+
                 // Datum des zuletzt hinzugefügten Usereintrags ziehen
                 $lastEntry = $post->users()->first();
                 $lastAnalysis = strtotime($lastEntry['created_at']) + 1;
+
                 // Likes und Kommentare ziehen
                 $likes = $this->fb->get($post->facebook_id . '/likes?limit=' . env('FB_LIMIT') . '&since=' . $lastAnalysis)->getGraphEdge()->all();
                 $comments = $this->fb->get($post->facebook_id . '/comments?limit=' . env('FB_LIMIT') . '&since=' . $lastAnalysis)->getGraphEdge()->all();
+
                 // Durch alle Likes UND Kommentare iterieren
                 foreach (array_merge($likes, $comments) as $data) {
                     // Überprüfe ob es sich gerade um ein Kommentar handelt
@@ -56,6 +65,17 @@ class UserAnalysisController extends Controller
                     if (array_key_exists('from', $data)) {
                         $data = $data['from']->all();
                     }
+
+                    // Überspringe User, wenn er eine markierte Seite geliket hat
+                    if ($markedPages) {
+                        $likedPages = $this->fb->get($data['id'] . '/likes')->getGraphEdge()->all();
+                        foreach ($likedPages as $page) {
+                            if (in_array($page['id'], $markedPagesIds)) {
+                                continue 2;
+                            }
+                        }
+                    }
+
                     // Überprüfe ob der User schon bekannt ist (bei dieser FB-Seite)
                     $registeredUser = FacebookUser::where('facebook_id', $data['id']);
                     if ($registeredUser->exists()) {
@@ -68,6 +88,7 @@ class UserAnalysisController extends Controller
                         $newUser->facebook_id = $data['id'];
                         $newUser->name = $data['name'];
                     }
+
                     $newUser->save();
                 }
             } catch (\Facebook\Exceptions\FacebookResponseException $e) {
