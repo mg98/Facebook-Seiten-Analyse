@@ -51,7 +51,10 @@ class PostMarkingController extends Controller
         $postId = $request->get('fbpost')->id;
 
         $this->validate($request, [
-            'page' => 'isFacebookPage|pageNotMarked:'.$postId
+            'page' => 'isFacebookPage'
+        ]);
+        $this->validate($request, [
+            'page' => 'pageNotMarked:'.$postId
         ]);
 
         $response = $this->fb->get($request->get('page'));
