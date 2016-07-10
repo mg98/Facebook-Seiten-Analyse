@@ -35,10 +35,13 @@ Route::group(['middleware' => 'auth'], function () {
     // Facebook Seiten Ansicht
     Route::group(['prefix' => '{fbpage}', 'middleware' => 'fbpage'], function () {
 
-        // Posts Übersicht
+        // Seite Übersicht
         Route::get('/', 'FacebookPageController@show');
         // Posts nachladen
         Route::get('nachladen', 'FacebookPageController@getPosts');
+
+        // Seite löschen
+        Route::post('delete', 'FacebookPageController@remove');
 
         // Facebook Seiten im Post markieren
         Route::group(['prefix' => '{fbpost}', 'middleware' => 'fbpost'], function () {

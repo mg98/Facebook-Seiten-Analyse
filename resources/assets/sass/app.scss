@@ -57,3 +57,19 @@ div.center {
     color: #e04251;
   }
 }
+
+#fbpages {
+  td:first-child {
+    font-weight: bold;
+    padding-right: 10px;
+  }
+
+  i.fa-check {
+    color: green;
+  }
+
+  i.fa-close {
+    color: #e04251;
+    cursor: pointer;
+  }
+}

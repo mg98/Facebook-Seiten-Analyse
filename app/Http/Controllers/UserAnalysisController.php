@@ -42,10 +42,8 @@ class UserAnalysisController extends Controller
         $fbpage->save();
 
         // Datum des zuletzt hinzugefügten Usereintrags ziehen
-        $lastEntry = $fbpage->users()->sortBy(function($fbuser) {
-            return $fbuser->updated_at;
-        })->last();
-        $lastAnalysis = $lastEntry ? strtotime($lastEntry->updated_at) + 1 : 0;
+        $lastEntry = $this->getLastAnalysis($fbpage);
+        $lastAnalysis = $lastEntry ? strtotime($lastEntry) + 1 : 0;
 
         foreach ($fbpage->posts()->get() as $post) {
             try {
@@ -159,5 +157,19 @@ class UserAnalysisController extends Controller
         Cache::tags(['results', $fbpage->id])->forever($page, $result_page);
 
         return $result_page;
+    }
+
+    /**
+     * Gibt den Zeitpunkt der zuletzt abgeschlossenen Analyse zurück
+     *
+     * @param FacebookPage $fbpage
+     * @return \DateTime|null
+     */
+    public static function getLastAnalysis($fbpage) {
+        $lastAnalysis = $fbpage->users()->sortBy(function($fbuser) {
+            return $fbuser->updated_at;
+        })->last();
+
+        return $lastAnalysis ? $lastAnalysis->updated_at : null;
     }
 }

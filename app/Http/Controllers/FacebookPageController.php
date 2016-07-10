@@ -105,6 +105,12 @@ class FacebookPageController extends Controller
         return Redirect::back();
     }
 
+    public function remove(Request $request) {
+        $fbpage = $request->get('fbpage');
+        dd($fbpage);
+        return Redirect::back();
+    }
+
     /**
      * Holt einen Access Token der erst in 2 Monaten ausläuft
      *

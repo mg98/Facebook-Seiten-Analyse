@@ -1,4 +1,5 @@
 $(function() {
+    
     $("#start-analysis").click(function() {
         var $startButton = $(this).find("button");
 
@@ -30,5 +31,18 @@ $(function() {
 
         return false;
     });
+    
+    $(".fbpage-delete").click(function() {
+        var id = $(this).attr("id");
+        var name = $(this).attr("name");
+
+        if (
+            confirm("Bist du sicher, dass du die Seite \"" + name + "\" (ID: " + id + ") löschen möchtest?" + 
+                "\n\nAlle damit zusammenhängenden Daten, sowie die Nutzerdaten werden dadurch unwiderruflich gelöscht.")
+        ) {
+            $(this).parent("form").submit();
+        }
+    })
+    
 });
 //# sourceMappingURL=all.js.map

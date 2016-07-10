@@ -54,3 +54,23 @@ function nth_strpos($haystack, $needle, $occurence = 1) {
     }
     return false;
 }
+
+/**
+ * Macht dasselbe wie array_chunk() für Objekte
+ *
+ * @param Illuminate\Database\Eloquent\Collection $collection
+ * @param int $size
+ * @return array
+ */
+function collection_chunk($collection, $size) {
+    $arrays = [];
+    $i = 0;
+    foreach ($collection as $item) {
+        if ($i++ % $size == 0) {
+            $arrays[] = [];
+            $current = & $arrays[count($arrays) - 1];
+        }
+        $current[] = $item;
+    }
+    return $arrays;
+}
