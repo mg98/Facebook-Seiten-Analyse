@@ -20,11 +20,11 @@
                                                     <a href="http://facebook.com/{{ $fbpage->facebook_id }}" target="_blank" title="Auf Facebook öffnen">
                                                         <i class="fa fa-facebook-square" aria-hidden="true"></i>
                                                     </a>
-                                                    <a href="{{ url(niceEncode($fbpage->name)) }}">
+                                                    <a href="{{ url(nice_encode($fbpage->name)) }}">
                                                         {{ $fbpage->name }}
                                                     </a>
 
-                                                    {!! Form::open(['method' => 'POST', 'class' => 'pull-right', 'url' => niceEncode($fbpage->name) . '/delete']) !!}
+                                                    {!! Form::open(['method' => 'POST', 'class' => 'pull-right', 'url' => nice_encode($fbpage->name) . '/delete']) !!}
                                                         {!! Form::hidden('id', $fbpage->id) !!}
                                                         <i class="fa fa-close fbpage-delete" id="{{ $fbpage->id }}" name="{{ $fbpage->name }}" title="Löschen"></i>
                                                     {!! Form::close() !!}

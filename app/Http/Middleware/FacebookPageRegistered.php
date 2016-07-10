@@ -16,7 +16,7 @@ class FacebookPageRegistered
      */
     public function handle($request, Closure $next)
     {
-        $fbpage = FacebookPage::where('name', niceDecode($request->fbpage));
+        $fbpage = FacebookPage::where('name', nice_decode($request->fbpage));
 
         if (!$fbpage->exists()) {
              abort(404, 'Die angeforderte Facebook-Seite ist nicht registriert.');

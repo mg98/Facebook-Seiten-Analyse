@@ -9,7 +9,7 @@
                     <div class="panel-body">
                         {{-- Menü Tabs --}}
                         <ul class="nav nav-tabs nav-justified">
-                            <li role="presentation"><a href="{{ url(niceEncode($fbpage->name)) }}">Posts</a></li>
+                            <li role="presentation"><a href="{{ url(nice_encode($fbpage->name)) }}">Posts</a></li>
                             <li role="presentation" class="active"><a href="#">Analyse</a></li>
                         </ul>
 

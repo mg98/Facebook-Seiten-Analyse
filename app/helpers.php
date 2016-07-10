@@ -19,7 +19,7 @@ function debug($var) {
  * @param string$string
  * @return string
  */
-function niceEncode($string) {
+function nice_encode($string) {
     return str_replace(' ', '_', $string);
 }
 
@@ -30,7 +30,7 @@ function niceEncode($string) {
  * @param string$string
  * @return string
  */
-function niceDecode($string) {
+function nice_decode($string) {
     return str_replace('_', ' ', $string);
 }
 
