@@ -11,7 +11,7 @@ class PostMark extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'post_id',
+        'facebook_post_id',
         'name',
         'facebook_id'
     ];

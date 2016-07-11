@@ -36,7 +36,7 @@ class PostMarkingController extends Controller
     public function index(Request $request) {
         $fbpage = $request->get('fbpage');
         $post = $request->get('fbpost');
-        $marks = PostMark::where('post_id', $post->id)->get();
+        $marks = $post->postMarks()->get();
 
         return view('fbpage/mark', compact('fbpage', 'post', 'marks'));
     }
@@ -61,7 +61,7 @@ class PostMarkingController extends Controller
         $pageNode = $response->getGraphPage()->all();
 
         $newPostMark = new PostMark;
-        $newPostMark->post_id = $postId;
+        $newPostMark->facebook_post_id = $postId;
         $newPostMark->name = $pageNode['name'];
         $newPostMark->facebook_id = $pageNode['id'];
         $newPostMark->save();

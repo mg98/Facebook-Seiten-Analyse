@@ -113,8 +113,9 @@ class FacebookPageController extends Controller
      */
     public function remove(Request $request) {
         $fbpage = $request->get('fbpage');
-        foreach ($fbpage->users() as $user) {
-            $user->delete();
+        foreach ($fbpage->posts()->get() as $fbpost) {
+            $fbpost->users()->delete();
+            $fbpost->postMarks()->delete();
         }
         $fbpage->posts()->delete();
         $fbpage->delete();

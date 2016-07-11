@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use \Illuminate\Database\Eloquent\Relations\HasMany;
 
 class FacebookPost extends Model
 {
@@ -17,8 +18,22 @@ class FacebookPost extends Model
         'published_at'
     ];
 
+    /**
+     * Holt Facebook User die mit diesem Post zusammenhängen
+     *
+     * @return HasMany
+     */
     public function users() {
         return $this->hasMany('App\FacebookUser');
+    }
+
+    /**
+     * Holt markierte Seiten dieses Posts
+     *
+     * @return HasMany
+     */
+    public function postMarks() {
+        return $this->hasMany('App\PostMark');
     }
 
 }
