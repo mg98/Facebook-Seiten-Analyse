@@ -105,9 +105,20 @@ class FacebookPageController extends Controller
         return Redirect::back();
     }
 
+    /**
+     * Löscht eine Facebook Seite und alle anhängenden Einträge
+     *
+     * @param Request $request
+     * @return mixed
+     */
     public function remove(Request $request) {
         $fbpage = $request->get('fbpage');
-        dd($fbpage);
+        foreach ($fbpage->users() as $user) {
+            $user->delete();
+        }
+        $fbpage->posts()->delete();
+        $fbpage->delete();
+
         return Redirect::back();
     }
 

@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class FacebookPage extends Model
 {
@@ -17,7 +18,7 @@ class FacebookPage extends Model
     /**
      * Holt alle Posts dieser Seite aus der Datenbank
      *
-     * @return mixed
+     * @return HasMany
      */
     public function posts() {
         return $this->hasMany('App\FacebookPost')->orderBy('published_at', 'desc');
