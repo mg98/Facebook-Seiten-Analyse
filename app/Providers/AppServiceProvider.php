@@ -58,7 +58,7 @@ class AppServiceProvider extends ServiceProvider
                 $pageNode = $response->getGraphPage();
                 $facebookId = $pageNode->all()['id'];
                 $postId = $parameters[0];
-                return !PostMark::where('facebook_id', $facebookId)->where('post_id', $postId)->exists();
+                return !PostMark::where('facebook_id', $facebookId)->where('facebook_post_id', $postId)->exists();
             } catch(\Facebook\Exceptions\FacebookResponseException $e) {
                 // When Graph returns an error
                 return false;

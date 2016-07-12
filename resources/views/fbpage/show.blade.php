@@ -10,7 +10,7 @@
                         {{-- Menü Tabs --}}
                         <ul class="nav nav-tabs nav-justified">
                             <li role="presentation" class="active"><a href="#">Posts</a></li>
-                            <li role="presentation"><a href="{{ url(nice_encode($fbpage->name) . '/analyse') }}">Analyse</a></li>
+                            <li role="presentation"><a href="{{ url(urlencode($fbpage->name) . '/analyse') }}">Analyse</a></li>
                         </ul>
 
                         {{-- Alerts --}}
@@ -32,25 +32,25 @@
 
                         {{-- Steuerelemente --}}
                         <div id="action-bar">
-                            <a href="{{ url(nice_encode($fbpage->name) . '/nachladen') }}">
+                            <a href="{{ url(urlencode($fbpage->name) . '/nachladen') }}">
                                 <button type="button" class="btn btn-default">
                                     <i class="fa fa-refresh" aria-hidden="true"></i> Posts nachladen
                                 </button>
                             </a>
                             @if ($fbpage->analyzing)
-                                <a id="stop-analysis" href="{{ url(nice_encode($fbpage->name) . '/analyse/stop') }}">
+                                <a id="stop-analysis" href="{{ url(urlencode($fbpage->name) . '/analyse/stop') }}">
                                     <button type="button" class="btn btn-default">
                                         <i class="fa fa-stop"></i> Nutzeranalyse stoppen
                                     </button>
                                 </a>
                             @else
-                                <a id="start-analysis" href="{{ url(nice_encode($fbpage->name) . '/analyse/start') }}">
+                                <a id="start-analysis" href="{{ url(urlencode($fbpage->name) . '/analyse/start') }}">
                                     <button type="button" class="btn btn-default">
                                         <i class="fa fa-play" aria-hidden="true"></i> Nutzeranalyse starten
                                     </button>
                                 </a>
                             @endif
-                            <a href="{{ url(nice_encode($fbpage->name) . '/export') }}">
+                            <a href="{{ url(urlencode($fbpage->name) . '/export') }}">
                                 <button type="button" class="btn btn-default">
                                     <i class="fa fa-cloud-download" aria-hidden="true"></i> CSV Export
                                 </button>
@@ -71,7 +71,7 @@
                                     <td>{{ $post->published_at }}</td>
                                     <td>{{ count($post->users()->get()) }}</td>
                                     <td>
-                                        <a href="{{ url(nice_encode($fbpage->name) . '/' . $post->id . '/markieren') }}" title="Markierte Personen hinzufügen">
+                                        <a href="{{ url(urlencode($fbpage->name) . '/' . $post->id . '/markieren') }}" title="Markierte Personen hinzufügen">
                                             <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                                         </a>
                                         <a href="http://facebook.com/{{ $post->facebook_id }}" target="_blank" title="Auf Facebook öffnen">

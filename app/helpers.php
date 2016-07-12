@@ -13,28 +13,6 @@ function debug($var) {
 }
 
 /**
- * Encodiert Strings zum Gebrauch in der URL,
- * indem es Leerzeichen durch Unterstriche ersetzt
- *
- * @param string$string
- * @return string
- */
-function nice_encode($string) {
-    return str_replace(' ', '_', $string);
-}
-
-/**
- * Decodiert Strins aus der URL,
- * indem es Unterstriche durch Leerzeichen ersetzt
- *
- * @param string$string
- * @return string
- */
-function nice_decode($string) {
-    return str_replace('_', ' ', $string);
-}
-
-/**
  * Findet das n-te Vorkommen einer Zeichenkette
  * innerhalb einer anderen Zeichenkette
  *
