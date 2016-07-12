@@ -50,6 +50,11 @@
                                     </button>
                                 </a>
                             @endif
+                            <a href="{{ url(nice_encode($fbpage->name) . '/export') }}">
+                                <button type="button" class="btn btn-default">
+                                    <i class="fa fa-cloud-download" aria-hidden="true"></i> CSV Export
+                                </button>
+                            </a>
                         </div>
 
                         {{-- Posts Tabelle --}}

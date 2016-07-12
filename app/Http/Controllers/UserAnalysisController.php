@@ -11,6 +11,7 @@ use App\FacebookPost;
 use App\FacebookUser;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Pagination;
+use Illuminate\Support\Facades\Response;
 use \Illuminate\View\View;
 
 class UserAnalysisController extends Controller
@@ -160,6 +161,38 @@ class UserAnalysisController extends Controller
     }
 
     /**
+     * Generiert für eine Facebook Seite eine CSV Datei
+     * mit den gesammelten Nutzerdaten, sortiert nach Relevanz
+     *
+     * @param Request $request
+     * @return StreamedResponse
+     */
+    public function export(Request $request) {
+        $fbpage = $request->get('fbpage');
+        $fbusers = $fbpage->users()->sortByDesc('count');
+
+        $callback = function() use ($fbusers) {
+            $handle = fopen('php://output', 'w+');
+            fputcsv($handle, ['Facebook ID', 'Name', 'Anzahl']);
+
+            foreach($fbusers as $user) {
+                fputcsv($handle, [$user['facebook_id'], $user['name'], $user['count']]);
+            }
+
+            fclose($handle);
+        };
+
+        $filename = 'export-' . date('d-m-y-') . strtolower(str_replace(' ', '-', $fbpage->name));
+
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename=' . $filename . '.csv'
+        ];
+        
+        return Response::stream($callback, 200, $headers);
+    }
+
+    /**
      * Gibt den Zeitpunkt der zuletzt abgeschlossenen Analyse zurück
      *
      * @param FacebookPage $fbpage
@@ -172,4 +205,5 @@ class UserAnalysisController extends Controller
 
         return $lastAnalysis ? $lastAnalysis->updated_at : null;
     }
+
 }

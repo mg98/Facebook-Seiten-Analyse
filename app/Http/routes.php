@@ -43,6 +43,9 @@ Route::group(['middleware' => 'auth'], function () {
         // Seite löschen
         Route::post('delete', 'FacebookPageController@remove');
 
+        // Ergebnisse exportieren
+        Route::get('export', 'UserAnalysisController@export');
+
         // Facebook Seiten im Post markieren
         Route::group(['prefix' => '{fbpost}', 'middleware' => 'fbpost'], function () {
             Route::get('markieren', 'PostMarkingController@index');
