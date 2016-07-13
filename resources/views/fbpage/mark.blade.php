@@ -37,7 +37,7 @@
                                 <ul class="list-inline">
                                     @foreach ($marks as $mark)
                                         <li>
-                                            <a href="{{ url(urlencode($fbpage->name) . '/' . $post->id . '/' . $mark->id . '/demarkieren') }}" title="Markierung entfernen">
+                                            <a href="{{ url(nice_encode($fbpage->name) . '/' . $post->id . '/' . $mark->id . '/demarkieren') }}" title="Markierung entfernen">
                                                 <i class="fa fa-eraser" aria-hidden="true"></i>
                                             </a>
                                             <a href="http://facebook.com/{{ $mark->facebook_id }}" target="_blank">

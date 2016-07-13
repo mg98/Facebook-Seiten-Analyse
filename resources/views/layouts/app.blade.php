@@ -48,7 +48,7 @@
 
                             <ul class="dropdown-menu" role="menu">
                                 @forelse (\App\FacebookPage::all() as $fbpage)
-                                    <li><a href="{{ url(urlencode($fbpage->name)) }}">{{ $fbpage->name }}</a></li>
+                                    <li><a href="{{ url(nice_encode($fbpage->name)) }}">{{ $fbpage->name }}</a></li>
                                 @empty
                                     <li><a><i>Keine verfügbar</i></a></li>
                                 @endforelse

@@ -13,6 +13,36 @@ function debug($var) {
 }
 
 /**
+ * Encodiert "/" und "\" in Strings
+ *
+ * @param string $string
+ * @return string
+ */
+function nice_encode($string) {
+    $string = urlencode($string);
+    if (!env('ALLOW_ENCODED_SLASHES')) {
+        $string = str_replace('%2F', '%2X2F', $string);
+        $string = str_replace('%5C', '%5X5C', $string);
+    }
+    return $string;
+}
+
+/**
+ * Decodiert umgewandelte "/" und "\" aus Strings
+ *
+ * @param string $string
+ * @return string
+ */
+function nice_decode($string) {
+    $string = urldecode($string);
+    if (!env('ALLOW_ENCODED_SLASHES')) {
+        $string = str_replace('%2X2F', '/', $string);
+        $string = str_replace('%5X5C', '\\', $string);
+    }
+    return $string;
+}
+
+/**
  * Findet das n-te Vorkommen einer Zeichenkette
  * innerhalb einer anderen Zeichenkette
  *
