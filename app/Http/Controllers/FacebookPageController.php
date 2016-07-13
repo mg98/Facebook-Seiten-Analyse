@@ -76,29 +76,29 @@ class FacebookPageController extends Controller
     public function getPosts(Request $request) {
         $fbpage = $request->get('fbpage');
         // Posts anfordern
-        if (!FacebookPost::where('facebook_page_id', $fbpage->id)->exists()) {
+        if (!$fbpage->posts()->count()) {
             // Wenn es zu dieser Facebook Seite noch keine gibt, hol alle
-            $posts = $this->fb->get($fbpage->facebook_id . '/posts?limit=100')->getGraphEdge();
+            $posts = $this->fb->get($fbpage->facebook_id . '/feed?limit=' . env('FB_GETPOSTS_LIMIT'))->getGraphEdge();
         } else {
             // Sonst hol nur die Posts seit dem letzten Eintrag
-            $latestPost = FacebookPost::where('facebook_page_id', $fbpage->id)->orderBy('published_at', 'desc')->first();
+            $latestPost = $fbpage->posts()->orderBy('published_at', 'desc')->first();
             $lastDay = date('Y-m-d', strtotime($latestPost['published_at']));
-            $posts = $this->fb->get($fbpage->facebook_id . '/posts?limit=100&since=' . $lastDay)->getGraphEdge();
+            $posts = $this->fb->get($fbpage->facebook_id . '/feed?limit=100&since=' . $lastDay)->getGraphEdge();
         }
 
-        // Posts in der Datenbank abspeichern
+        // Posts in die Datenbank abspeichern
         foreach ($posts->all() as $post) {
             $post = $post->all();
+
             // Wenn bereits eingetragen, überspringen
-            if (FacebookPost::where('facebook_id', $post['id'])->exists()) {
-                continue;
-            }
+            if (FacebookPost::where('facebook_id', $post['id'])->exists()) continue;
+
             $newPost = new FacebookPost;
             $newPost->facebook_page_id = $fbpage->id;
             $newPost->facebook_id = $post['id'];
             $text = array_key_exists('message', $post) ? $post['message'] : $post['story'];
             $newPost->text = substr($text, 0, 50);
-            $newPost->published_at = $post['created_time'];
+            $newPost->published_at = isset($post['created_time']) ? $post['created_time'] : $post['updated_time'];
             $newPost->save();
         }
 
