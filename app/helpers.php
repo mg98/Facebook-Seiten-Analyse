@@ -21,8 +21,8 @@ function debug($var) {
 function nice_encode($string) {
     $string = urlencode($string);
     if (!env('ALLOW_ENCODED_SLASHES')) {
-        $string = str_replace('%2F', '%2X2F', $string);
-        $string = str_replace('%5C', '%5X5C', $string);
+        $string = str_replace('%2F', '$2F', $string);
+        $string = str_replace('%5C', '$5C', $string);
     }
     return $string;
 }
@@ -36,8 +36,8 @@ function nice_encode($string) {
 function nice_decode($string) {
     $string = urldecode($string);
     if (!env('ALLOW_ENCODED_SLASHES')) {
-        $string = str_replace('%2X2F', '/', $string);
-        $string = str_replace('%5X5C', '\\', $string);
+        $string = str_replace('$2F', '/', $string);
+        $string = str_replace('$5C', '\\', $string);
     }
     return $string;
 }
