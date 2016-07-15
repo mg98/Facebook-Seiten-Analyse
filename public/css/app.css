@@ -29,6 +29,23 @@ div.center {
 #posts .fa {
   margin-left: 10px; }
 
+#users th:nth-child(2), #users td:nth-child(2) {
+  width: 100px;
+  text-align: center; }
+
+#users th:nth-child(3), #users td:nth-child(3),
+#users th:nth-child(4), #users td:nth-child(4) {
+  width: 160px; }
+
+#users th:nth-child(5), #users td:nth-child(5) {
+  width: 75px;
+  text-align: right; }
+  #users th:nth-child(5) a, #users td:nth-child(5) a {
+    display: inline-block; }
+
+#users .fa {
+  margin-left: 10px; }
+
 #alerts {
   margin-top: 10px; }
 

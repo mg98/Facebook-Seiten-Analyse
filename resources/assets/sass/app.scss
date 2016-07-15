@@ -41,6 +41,28 @@ div.center {
   }
 }
 
+#users {
+  th:nth-child(2), td:nth-child(2) {
+    width: 100px;
+    text-align: center;
+  }
+  th:nth-child(3), td:nth-child(3),
+  th:nth-child(4), td:nth-child(4) {
+    width: 160px;
+  }
+  th:nth-child(5), td:nth-child(5) {
+    width: 75px;
+    text-align: right;
+    a {
+      display: inline-block;
+    }
+  }
+
+  .fa {
+    margin-left: 10px;
+  }
+}
+
 #alerts {
   margin-top: 10px;
 }
