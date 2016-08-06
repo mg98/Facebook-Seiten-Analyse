@@ -67,6 +67,9 @@ div.center {
 
 #fbpages i.fa-close {
   color: #e04251;
-  cursor: pointer; }
+  cursor: pointer;
+  top: 13px;
+  right: 30px;
+  position: absolute; }
 
 /*# sourceMappingURL=app.css.map */
