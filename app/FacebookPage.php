@@ -31,11 +31,11 @@ class FacebookPage extends Model
      * @return Collection
      */
     public function users() {
-        $users = new Collection;;
-        foreach ($this->posts()->get() as $post) {
-            $users->merge($post->users()->get());
+        $users = [];
+        foreach ($this->posts()->get()->all() as $post) {
+            $users = array_merge($users, $post->users()->get()->all());
         }
-        return $users;
+        return collect($users);
     }
 
 }

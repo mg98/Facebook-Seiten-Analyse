@@ -103,16 +103,12 @@ class UserAnalysisController extends Controller
             }
         }
 
-        // Alten Cache der Ergebnisseite löschen und neuen erstellen
+        // Alten Cache löschen und neuen Cache erstellen
         Cache::tags(['results', $fbpage->id])->flush();
         $fbusers = $fbpage->users();
-        $result_page_path = substr($request->getPathInfo(), 0, nth_strpos($request->getPathInfo(), '/', 3));
-        // Erstelle Cache für Seite 1
         $users = $fbusers->sortByDesc('count')->forPage(1, 15);
-        $pagination = new Pagination\LengthAwarePaginator($fbusers->all(), $fbusers->count(), 15, 1);
-        $pagination->setPath($result_page_path);
-        $result_page = view('fbpage/results', compact('fbpage', 'users', 'pagination'))->render();
-        Cache::tags(['results', $fbpage->id])->forever(1, $result_page);
+        Cache::tags(['results', $fbpage->id])->forever('all_users', $fbusers);
+        Cache::tags(['results', $fbpage->id])->forever(1, $users);
 
         $fbpage->analyzing = false;
         $fbpage->save();
@@ -146,18 +142,20 @@ class UserAnalysisController extends Controller
         $fbpage = $request->get('fbpage');
 
         if (Cache::tags(['results', $fbpage->id])->has($page)) {
-            return Cache::tags(['results', $fbpage->id])->get($page);
+            $fbusers = Cache::tags(['results', $fbpage->id])->get('all_users');
+            $users = Cache::tags(['results', $fbpage->id])->get($page);
+        } else {
+            $fbusers = $fbpage->users();
+            $users = $fbusers->sortByDesc('count')->forPage($page, 15);
         }
 
-        $fbusers = $fbpage->users();
-        $users = $fbusers->sortByDesc('count')->forPage($page, 15);
         $pagination = new Pagination\LengthAwarePaginator($fbusers->all(), $fbusers->count(), 15, $page);
         $pagination->setPath($request->getPathInfo());
 
-        $result_page = view('fbpage/results', compact('fbpage', 'users', 'pagination'))->render();
-        Cache::tags(['results', $fbpage->id])->forever($page, $result_page);
+        Cache::tags(['results', $fbpage->id])->forever('all_users', $fbusers);
+        Cache::tags(['results', $fbpage->id])->forever($page, $users);
 
-        return $result_page;
+        return view('fbpage/results', compact('fbpage', 'users', 'pagination'));
     }
 
     /**
@@ -190,6 +188,23 @@ class UserAnalysisController extends Controller
         ];
         
         return Response::stream($callback, 200, $headers);
+    }
+
+
+    /**
+     * Löscht alle Nutzerdaten der Facebook Seite
+     *
+     * @param Request $request
+     * @return Redirect
+     */
+    public function reset(Request $request) {
+        $fbpage = $request->get('fbpage');
+        $postIds = $fbpage->posts()->pluck('id')->all();
+        $users = FacebookUser::whereIn('facebook_post_id', $postIds);
+        $users->delete();
+        Cache::tags(['results', $fbpage->id])->flush();
+
+        return Redirect::back();
     }
 
     /**

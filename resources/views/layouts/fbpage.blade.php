@@ -65,6 +65,16 @@
                                     <i class="fa fa-cloud-download" aria-hidden="true"></i> CSV Export
                                 </button>
                             </a>
+                            <a href="{{ url(nice_encode($fbpage->name) . '/reset') }}">
+                                <button type="button" class="btn btn-danger">
+                                    <i class="fa fa-trash" aria-hidden="true"></i> Posts
+                                </button>
+                            </a>
+                            <a id="analysis-reset" href="{{ url(nice_encode($fbpage->name) . '/analyse/reset') }}">
+                                <button type="button" class="btn btn-danger">
+                                    <i class="fa fa-trash" aria-hidden="true"></i> Ergebnisse
+                                </button>
+                            </a>
                         </div>
 
                         @yield('table')

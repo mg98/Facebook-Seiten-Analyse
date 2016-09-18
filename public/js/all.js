@@ -42,7 +42,11 @@ $(function() {
         ) {
             $(this).parent("form").submit();
         }
-    })
+    });
+
+    $("#analysis-reset").click(function() {
+        return confirm("Du bist dabei alle Nutzerdaten dieser Seite unwideruflich zu löschen. Möchtest du fortfahren?");
+    });
     
 });
 //# sourceMappingURL=all.js.map

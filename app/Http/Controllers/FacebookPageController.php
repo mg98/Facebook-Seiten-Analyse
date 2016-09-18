@@ -123,6 +123,14 @@ class FacebookPageController extends Controller
         return Redirect::back();
     }
 
+    public function deletePosts(Request $request) {
+        $fbpage = $request->get('fbpage');
+        $fbpage->posts()->delete();
+        
+
+        return Redirect::back();
+    }
+
     /**
      * Holt einen Access Token der erst in 2 Monaten ausläuft
      *

@@ -11,8 +11,10 @@
 |
 */
 
-// Long Lived Access Token
+// Nützliche Helfer
+Route::get('php', function() { phpinfo(); });
 Route::get('getaccesstoken', 'FacebookPageController@getAccessToken');
+Route::get('clearcache', function() { return Cache::flush(); });
 
 // Authentication routes...
 Route::get('login', 'Auth\AuthController@showLoginForm');
@@ -71,6 +73,8 @@ Route::group(['middleware' => 'auth'], function () {
             });
 
             Route::get('stop', 'UserAnalysisController@stop');
+
+            Route::get('reset', 'UserAnalysisController@reset');
 
         });
 
