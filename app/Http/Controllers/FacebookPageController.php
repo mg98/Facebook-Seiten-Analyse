@@ -133,7 +133,8 @@ class FacebookPageController extends Controller
         //$llat = $getLlat->getDecodedBody()['access_token'];
         //return $llat;
 
-        $accessToken = $this->fb->get('/oauth/access_token?client_id='.env('FB_APPID').'&client_secret='.env('FB_SECRET').'&grant_type=fb_exchange_token&fb_exchange_token='.env('FB_ACCESSTOKEN'));
+        $fbResponse = $this->fb->get('/oauth/access_token?client_id='.env('FB_APP_ID').'&client_secret='.env('FB_APP_SECRET').'&grant_type=fb_exchange_token&fb_exchange_token='.env('FB_ACCESSTOKEN'));
+        $accessToken = json_decode($fbResponse->getBody())->access_token;
         return $accessToken;
     }
 

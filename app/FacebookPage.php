@@ -31,13 +31,11 @@ class FacebookPage extends Model
      * @return Collection
      */
     public function users() {
-        $this->load('posts.users');
-        $users = $this->posts->lists('users');
-        $collection = new Collection;
-        foreach ($users as $postUser) {
-            $collection = $collection->merge($postUser);
+        $users = new Collection;;
+        foreach ($this->posts()->get() as $post) {
+            $users->merge($post->users()->get());
         }
-        return $collection;
+        return $users;
     }
 
 }
