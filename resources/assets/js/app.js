@@ -45,7 +45,10 @@ $(function() {
     });
 
     $("#analysis-reset").click(function() {
-        return confirm("Du bist dabei alle Nutzerdaten dieser Seite unwideruflich zu löschen. Möchtest du fortfahren?");
+        return confirm("Du bist dabei alle Nutzerdaten dieser Seite unwiderruflich zu löschen.\n\nMöchtest du fortfahren?");
+    });
+    $("#page-reset").click(function() {
+        return confirm("Du bist die Seite zurückzusetzen. Alle Posts und Nutzerdaten gehen damit unwiderruflich verloren.\n\nMöchtest du fortfahren?");
     });
     
 });

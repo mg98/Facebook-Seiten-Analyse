@@ -123,10 +123,21 @@ class FacebookPageController extends Controller
         return Redirect::back();
     }
 
-    public function deletePosts(Request $request) {
+    /**
+     * Löscht alle Posts und zusammenhängende Nutzerdaten der Facebook Seite
+     *
+     * @param Request $request
+     * @return Redirect
+     */
+    public function reset(Request $request) {
         $fbpage = $request->get('fbpage');
-        $fbpage->posts()->delete();
-        
+        foreach ($fbpage->posts()->get() as $post) {
+            $post->users()->delete();
+            $post->postMarks()->delete();
+            $post->delete();
+        }
+
+        Cache::tags(['results', $fbpage->id])->flush();
 
         return Redirect::back();
     }

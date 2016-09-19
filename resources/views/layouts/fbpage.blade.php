@@ -65,14 +65,14 @@
                                     <i class="fa fa-cloud-download" aria-hidden="true"></i> CSV Export
                                 </button>
                             </a>
-                            <a href="{{ url(nice_encode($fbpage->name) . '/reset') }}">
+                            <a id="page-reset" href="{{ url(nice_encode($fbpage->name) . '/reset') }}">
                                 <button type="button" class="btn btn-danger">
-                                    <i class="fa fa-trash" aria-hidden="true"></i> Posts
+                                    <i class="fa fa-trash" aria-hidden="true"></i> Hard Reset
                                 </button>
                             </a>
                             <a id="analysis-reset" href="{{ url(nice_encode($fbpage->name) . '/analyse/reset') }}">
                                 <button type="button" class="btn btn-danger">
-                                    <i class="fa fa-trash" aria-hidden="true"></i> Ergebnisse
+                                    <i class="fa fa-trash" aria-hidden="true"></i> Nutzerdaten zurücksetzen
                                 </button>
                             </a>
                         </div>

@@ -152,8 +152,10 @@ class UserAnalysisController extends Controller
         $pagination = new Pagination\LengthAwarePaginator($fbusers->all(), $fbusers->count(), 15, $page);
         $pagination->setPath($request->getPathInfo());
 
-        Cache::tags(['results', $fbpage->id])->forever('all_users', $fbusers);
-        Cache::tags(['results', $fbpage->id])->forever($page, $users);
+        if ($fbusers->count()) {
+            Cache::tags(['results', $fbpage->id])->forever('all_users', $fbusers);
+            Cache::tags(['results', $fbpage->id])->forever($page, $users);
+        }
 
         return view('fbpage/results', compact('fbpage', 'users', 'pagination'));
     }

@@ -42,6 +42,8 @@ Route::group(['middleware' => 'auth'], function () {
         // Posts nachladen
         Route::get('nachladen', 'FacebookPageController@getPosts');
 
+        // Seite zurücksetzen
+        Route::get('reset', 'FacebookPageController@reset');
         // Seite löschen
         Route::post('delete', 'FacebookPageController@remove');
 
