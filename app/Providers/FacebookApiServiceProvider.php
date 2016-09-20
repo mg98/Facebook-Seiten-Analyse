@@ -21,12 +21,7 @@ class FacebookApiServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        self::$fb = new Facebook([
-            'app_id' => env('FB_APP_ID'),
-            'app_secret' => env('FB_APP_SECRET'),
-            'default_graph_version' => 'v2.5',
-            'default_access_token' => env('FB_ACCESSTOKEN')
-        ]);
+        //
     }
 
     /**
@@ -46,6 +41,15 @@ class FacebookApiServiceProvider extends ServiceProvider
      * @return Facebook
      */
     public static function get() {
+        if (is_null(self::$fb)) {
+            self::$fb = new Facebook([
+                'app_id' => env('FB_APP_ID'),
+                'app_secret' => env('FB_APP_SECRET'),
+                'default_graph_version' => 'v2.5',
+                'default_access_token' => env('FB_ACCESSTOKEN')
+            ]);
+        }
+        
         return self::$fb;
     }
 }

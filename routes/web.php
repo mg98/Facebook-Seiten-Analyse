@@ -28,6 +28,10 @@ Route::get('/', 'HomeController@index');
 // Eingeloggter Bereich
 Route::group(['middleware' => 'auth'], function () {
 
+    // User Einstellungen
+    Route::get('settings', 'UserController@showSettings');
+    Route::post('settings', 'UserController@update');
+
     // Seite hinzufügen
     Route::get('neu', function() {
         return view('fbpage/new');

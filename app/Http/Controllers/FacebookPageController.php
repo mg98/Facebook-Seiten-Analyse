@@ -24,6 +24,7 @@ class FacebookPageController extends Controller
      * Facebook Graph API ansprechen
      */
     public function __construct() {
+        dd(auth()->check());
         $this->fb = \App\Providers\FacebookApiServiceProvider::get();
     }
 
@@ -133,8 +134,6 @@ class FacebookPageController extends Controller
         $fbpage = $request->get('fbpage');
         foreach ($fbpage->posts()->get() as $post) {
             $post->users()->delete();
-            $post->postMarks()->delete();
-            $post->delete();
         }
 
         Cache::tags(['results', $fbpage->id])->flush();
