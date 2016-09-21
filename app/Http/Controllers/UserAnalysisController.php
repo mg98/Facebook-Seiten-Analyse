@@ -18,18 +18,6 @@ class UserAnalysisController extends Controller
 {
 
     /**
-     * @var Facebook $fb
-     */
-    public $fb = null;
-
-    /**
-     * Facebook Graph API ansprechen
-     */
-    public function __construct() {
-        $this->fb = \App\Providers\FacebookApiServiceProvider::get();
-    }
-
-    /**
      * Startet Nutzeranalyse (Aufruf über AJAX)
      *
      * @param Request $request
@@ -56,8 +44,8 @@ class UserAnalysisController extends Controller
                 }
 
                 // Likes und Kommentare ziehen
-                $likes = $this->fb->get($post->facebook_id . '/likes?limit=' . env('FB_LIMIT') . '&since=' . $lastAnalysis)->getGraphEdge()->all();
-                $comments = $this->fb->get($post->facebook_id . '/comments?limit=' . env('FB_LIMIT') . '&since=' . $lastAnalysis)->getGraphEdge()->all();
+                $likes = fb()->get($post->facebook_id . '/likes?limit=' . env('FB_LIMIT') . '&since=' . $lastAnalysis)->getGraphEdge()->all();
+                $comments = fb()->get($post->facebook_id . '/comments?limit=' . env('FB_LIMIT') . '&since=' . $lastAnalysis)->getGraphEdge()->all();
 
                 // Durch alle Likes UND Kommentare iterieren
                 foreach (array_merge($likes, $comments) as $data) {
@@ -69,7 +57,7 @@ class UserAnalysisController extends Controller
 
                     // Überspringe User, wenn er eine markierte Seite geliket hat
                     if ($markedPages) {
-                        $likedPages = $this->fb->get($data['id'] . '/likes')->getGraphEdge()->all();
+                        $likedPages = fb()->get($data['id'] . '/likes')->getGraphEdge()->all();
                         foreach ($likedPages as $page) {
                             if (in_array($page['id'], $markedPagesIds)) {
                                 continue 2;

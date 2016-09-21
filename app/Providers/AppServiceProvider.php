@@ -19,9 +19,8 @@ class AppServiceProvider extends ServiceProvider
     {
         // Facebook page validator
         Validator::extend('isFacebookPage', function($attribute, $value, $parameters, $validator) {
-            $fb = FacebookApiServiceProvider::get();
             try {
-                $response = $fb->get($value);
+                $response = fb()->get($value);
                 $pageNode = $response->getGraphPage();
                 return boolval($pageNode);
             } catch(\Facebook\Exceptions\FacebookResponseException $e) {
@@ -35,9 +34,8 @@ class AppServiceProvider extends ServiceProvider
 
         // Überprüft ob die Seite nicht schon vorher eingetragen wurde
         Validator::extend('pageNotRegistered', function($attribute, $value, $parameters, $validator) {
-            $fb = FacebookApiServiceProvider::get();
             try {
-                $response = $fb->get($value);
+                $response = fb()->get($value);
                 $pageNode = $response->getGraphPage();
                 $facebookId = $pageNode->all()['id'];
                 return !FacebookPage::where('facebook_id', $facebookId)->exists();
@@ -52,9 +50,8 @@ class AppServiceProvider extends ServiceProvider
 
         // Überprüft ob die Seite nicht schon vorher an diesem Post markiert wurde
         Validator::extend('pageNotMarked', function($attribute, $value, $parameters, $validator) {
-            $fb = FacebookApiServiceProvider::get();
             try {
-                $response = $fb->get($value);
+                $response = fb()->get($value);
                 $pageNode = $response->getGraphPage();
                 $facebookId = $pageNode->all()['id'];
                 $postId = $parameters[0];

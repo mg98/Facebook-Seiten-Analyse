@@ -15,18 +15,6 @@ class PostMarkingController extends Controller
 {
 
     /**
-     * @var Facebook $fb
-     */
-    private $fb = null;
-
-    /**
-     * Facebook Graph API ansprechen
-     */
-    public function __construct() {
-        $this->fb = \App\Providers\FacebookApiServiceProvider::get();
-    }
-
-    /**
      * Rendert Seite zum Verwalten markierter
      * Facebook-Seiten in einem Post
      *
@@ -57,7 +45,7 @@ class PostMarkingController extends Controller
             'page' => 'pageNotMarked:'.$postId
         ]);
 
-        $response = $this->fb->get($request->get('page'));
+        $response = fb()->get($request->get('page'));
         $pageNode = $response->getGraphPage()->all();
 
         $newPostMark = new PostMark;

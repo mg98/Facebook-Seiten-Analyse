@@ -52,6 +52,7 @@ class Kernel extends HttpKernel
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+        'fbapi' => \App\Http\Middleware\FacebookAPI::class,
         'fbpage' => \App\Http\Middleware\FacebookPageRegistered::class,
         'fbpost' => \App\Http\Middleware\FacebookPostRegistered::class,
     ];

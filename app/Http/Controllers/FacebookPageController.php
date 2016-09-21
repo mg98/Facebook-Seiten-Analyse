@@ -16,19 +16,6 @@ class FacebookPageController extends Controller
 {
 
     /**
-     * @var Facebook $fb
-     */
-    private $fb = null;
-
-    /**
-     * Facebook Graph API ansprechen
-     */
-    public function __construct() {
-        dd(auth()->check());
-        $this->fb = \App\Providers\FacebookApiServiceProvider::get();
-    }
-
-    /**
      * Neue Facebook Seite erstellen
      *
      * @param Request $request
@@ -42,7 +29,7 @@ class FacebookPageController extends Controller
             'page' => 'pageNotRegistered'
         ]);
 
-        $response = $this->fb->get($request->get('page'));
+        $response = fb()->get($request->get('page'));
         $pageNode = $response->getGraphPage()->all();
 
         $newPage = new FacebookPage;
@@ -79,12 +66,12 @@ class FacebookPageController extends Controller
         // Posts anfordern
         if (!$fbpage->posts()->count()) {
             // Wenn es zu dieser Facebook Seite noch keine gibt, hol alle
-            $posts = $this->fb->get($fbpage->facebook_id . '/feed?limit=' . env('FB_GETPOSTS_LIMIT'))->getGraphEdge();
+            $posts = fb()->get($fbpage->facebook_id . '/feed?limit=' . env('FB_GETPOSTS_LIMIT'))->getGraphEdge();
         } else {
             // Sonst hol nur die Posts seit dem letzten Eintrag
             $latestPost = $fbpage->posts()->orderBy('published_at', 'desc')->first();
             $lastDay = date('Y-m-d', strtotime($latestPost['published_at']));
-            $posts = $this->fb->get($fbpage->facebook_id . '/feed?limit=100&since=' . $lastDay)->getGraphEdge();
+            $posts = fb()->get($fbpage->facebook_id . '/feed?limit=100&since=' . $lastDay)->getGraphEdge();
         }
 
         // Posts in die Datenbank abspeichern
@@ -97,7 +84,13 @@ class FacebookPageController extends Controller
             $newPost = new FacebookPost;
             $newPost->facebook_page_id = $fbpage->id;
             $newPost->facebook_id = $post['id'];
-            $text = array_key_exists('message', $post) ? $post['message'] : $post['story'];
+            if (array_key_exists('message', $post)) {
+                $text = $post['message'];
+            } else if (array_key_exists('story', $post)) {
+                $text = $post['story'];
+            } else {
+                continue;
+            }
             $newPost->text = substr($text, 0, 50);
             $newPost->published_at = isset($post['created_time']) ? $post['created_time'] : $post['updated_time'];
             $newPost->save();
@@ -134,6 +127,8 @@ class FacebookPageController extends Controller
         $fbpage = $request->get('fbpage');
         foreach ($fbpage->posts()->get() as $post) {
             $post->users()->delete();
+            $post->postMarks()->delete();
+            $post->delete();
         }
 
         Cache::tags(['results', $fbpage->id])->flush();
@@ -147,11 +142,7 @@ class FacebookPageController extends Controller
      * @return string
      */
     public function getAccessToken() {
-        //$getLlat = $this->fb->get('/oauth/access_token?grant_type=fb_exchange_token&client_id='.env('FB_APPID').'&client_secret='.env('FB_SECRET').'&fb_exchange_token='.env('FB_ACCESSTOKEN'));
-        //$llat = $getLlat->getDecodedBody()['access_token'];
-        //return $llat;
-
-        $fbResponse = $this->fb->get('/oauth/access_token?client_id='.env('FB_APP_ID').'&client_secret='.env('FB_APP_SECRET').'&grant_type=fb_exchange_token&fb_exchange_token='.env('FB_ACCESSTOKEN'));
+        $fbResponse = fb()->get('/oauth/access_token?client_id='.env('FB_APP_ID').'&client_secret='.env('FB_APP_SECRET').'&grant_type=fb_exchange_token&fb_exchange_token='.env('FB_ACCESSTOKEN'));
         $accessToken = json_decode($fbResponse->getBody())->access_token;
         return $accessToken;
     }

@@ -22,11 +22,11 @@ Route::post('login', 'Auth\AuthController@login');
 Route::get('logout', 'Auth\AuthController@logout');
 
 // Startseite
-Route::get('/', array('before' => 'auth', 'uses' => 'HomeController@index'));
+Route::get('/', ['before' => 'auth', 'uses' => 'HomeController@index']);
 Route::get('/', 'HomeController@index');
 
 // Eingeloggter Bereich
-Route::group(['middleware' => 'auth'], function () {
+Route::group(['middleware' => ['auth', 'fbapi']], function () {
 
     // User Einstellungen
     Route::get('settings', 'UserController@showSettings');

@@ -82,3 +82,12 @@ function collection_chunk($collection, $size) {
     }
     return $arrays;
 }
+
+/**
+ * Shortcut für Facebook API
+ *
+ * @return \Facebook\Facebook
+ */
+function fb() {
+    return \App\Http\Middleware\FacebookAPI::get();
+}
