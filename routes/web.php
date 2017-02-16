@@ -17,9 +17,9 @@ Route::get('getaccesstoken', 'FacebookPageController@getAccessToken');
 Route::get('clearcache', function() { return Cache::flush(); });
 
 // Authentication routes...
-Route::get('login', 'Auth\AuthController@showLoginForm');
-Route::post('login', 'Auth\AuthController@login');
-Route::get('logout', 'Auth\AuthController@logout');
+Route::get('login', 'Auth\LoginController@showLoginForm');
+Route::post('login', 'Auth\LoginController@login');
+Route::get('logout', 'Auth\LoginController@logout');
 
 // Startseite
 Route::get('/', ['before' => 'auth', 'uses' => 'HomeController@index']);
